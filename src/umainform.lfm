@@ -3,7 +3,7 @@ object Form1: TForm1
   Height = 499
   Top = 33
   Width = 951
-  Caption = 'Form1'
+  Caption = 'OvoSearch'
   ClientHeight = 499
   ClientWidth = 951
   object Panel1: TPanel
@@ -17,11 +17,11 @@ object Form1: TForm1
     TabOrder = 0
     object lbFiles: TLabeledEdit
       Left = 115
-      Height = 27
+      Height = 23
       Top = 8
       Width = 656
-      EditLabel.Height = 17
-      EditLabel.Width = 25
+      EditLabel.Height = 15
+      EditLabel.Width = 23
       EditLabel.Caption = 'Files'
       EditLabel.ParentColor = False
       LabelPosition = lpLeft
@@ -30,11 +30,11 @@ object Form1: TForm1
     end
     object lbPath: TLabeledEdit
       Left = 115
-      Height = 27
+      Height = 23
       Top = 40
       Width = 656
-      EditLabel.Height = 17
-      EditLabel.Width = 25
+      EditLabel.Height = 15
+      EditLabel.Width = 24
       EditLabel.Caption = 'Path'
       EditLabel.ParentColor = False
       LabelPosition = lpLeft
@@ -43,17 +43,17 @@ object Form1: TForm1
     end
     object lbContaining: TLabeledEdit
       Left = 115
-      Height = 27
+      Height = 23
       Top = 72
       Width = 656
-      EditLabel.Height = 17
-      EditLabel.Width = 60
+      EditLabel.Height = 15
+      EditLabel.Width = 59
       EditLabel.Caption = 'Containing'
       EditLabel.ParentColor = False
       LabelPosition = lpLeft
       TabOrder = 2
     end
-    object Button1: TButton
+    object bSearch: TButton
       Left = 866
       Height = 25
       Top = 64
@@ -66,25 +66,42 @@ object Form1: TForm1
   object Splitter1: TSplitter
     Cursor = crVSplit
     Left = 0
-    Height = 16
+    Height = 8
     Top = 104
     Width = 951
     Align = alTop
     ResizeAnchor = akTop
   end
-  object ListView1: TListView
+  object lvFiles: TListView
     Left = 0
-    Height = 379
-    Top = 120
-    Width = 651
+    Height = 387
+    Top = 112
+    Width = 491
     Align = alLeft
-    Columns = <>
+    Columns = <    
+      item
+        AutoSize = True
+        Caption = 'Name'
+        Width = 10
+      end    
+      item
+        Caption = 'Path'
+        Width = 10
+      end    
+      item
+        Caption = 'Size'
+        Width = 10
+      end    
+      item
+        Caption = 'Date'
+        Width = 10
+      end>
     TabOrder = 2
   end
   object Splitter2: TSplitter
-    Left = 651
-    Height = 379
-    Top = 120
-    Width = 5
+    Left = 491
+    Height = 387
+    Top = 112
+    Width = 8
   end
 end

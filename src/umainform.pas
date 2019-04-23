@@ -13,11 +13,11 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
-    Button1: TButton;
+    bSearch: TButton;
     lbContaining: TLabeledEdit;
     lbFiles: TLabeledEdit;
     lbPath: TLabeledEdit;
-    ListView1: TListView;
+    lvFiles: TListView;
     Panel1: TPanel;
     Splitter1: TSplitter;
     Splitter2: TSplitter;
