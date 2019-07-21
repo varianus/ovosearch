@@ -33,20 +33,6 @@ type
     ModifyDate: TDateTime;
   end;
 
-  TFilters = record
-    CheckContent: boolean;
-    CheckMinSize: boolean;
-    CheckMaxSize: boolean;
-    CheckMinDate: boolean;
-    CheckMaxDate: boolean;
-    Content: string;
-    MinSize: Int64;
-    MaxSize: int64;
-    MinDate: TDateTime;
-    MaxDate: TDateTime;
-
-  end;
-
   TFileInfoObject = class
   public
     info: TFileInfo;

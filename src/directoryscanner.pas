@@ -9,6 +9,47 @@ uses
 
 type
 
+  { TFilters }
+
+  TFilters = class
+  private
+    FCheckContent: boolean;
+    FCheckMaxDate: boolean;
+    FCheckMaxSize: boolean;
+    FCheckMinDate: boolean;
+    FCheckMinSize: boolean;
+    FContent: string;
+    FMask: string;
+    FMaxDate: TDateTime;
+    FMaxSize: int64;
+    FMinDate: TDateTime;
+    FMinSize: Int64;
+    procedure SetCheckContent(AValue: boolean);
+    procedure SetCheckMaxDate(AValue: boolean);
+    procedure SetCheckMaxSize(AValue: boolean);
+    procedure SetCheckMinDate(AValue: boolean);
+    procedure SetCheckMinSize(AValue: boolean);
+    procedure SetContent(AValue: string);
+    procedure SetMask(AValue: string);
+    procedure SetMaxDate(AValue: TDateTime);
+    procedure SetMaxSize(AValue: int64);
+    procedure SetMinDate(AValue: TDateTime);
+    procedure SetMinSize(AValue: Int64);
+  public
+    property CheckContent: boolean read FCheckContent write SetCheckContent;
+    property CheckMinSize: boolean read FCheckMinSize write SetCheckMinSize;
+    property CheckMaxSize: boolean read FCheckMaxSize write SetCheckMaxSize;
+    property CheckMinDate: boolean read FCheckMinDate write SetCheckMinDate;
+    property CheckMaxDate: boolean read FCheckMaxDate write SetCheckMaxDate;
+    property Content: string read FContent write SetContent;
+    property MinSize: Int64 read FMinSize write SetMinSize;
+    property MaxSize: int64 read FMaxSize write SetMaxSize;
+    property MinDate: TDateTime read FMinDate write SetMinDate;
+    property MaxDate: TDateTime read FMaxDate write SetMaxDate;
+    Property Mask: string read FMask write SetMask;
+
+  end;
+
   { TDirectoryScanner }
 
   TDirectoryScanner = class(TThread)
@@ -17,26 +58,94 @@ type
     CurrentPaths: TStringList;
     CurrFileName: TFileName;
     CurrInfo: TFileInfoObject;
-    FMasks: String;
+    FFilters: TFilters;
     function BuildFileList(const Path: string; const Attr: integer; Recurring: boolean; Filter: TFilters): boolean;
     procedure CallBack; register;
   protected
     procedure Execute; override;
   public
-    constructor CreateScanner(Paths: TStrings; Masks:String);
+    constructor CreateScanner(Paths: TStrings; Filters: TFilters);
     destructor Destroy;  override;
   end;
 
 implementation
 uses lclproc;
 
-constructor TDirectoryScanner.CreateScanner(Paths: TStrings; Masks:String);
+{ TFilters }
+
+procedure TFilters.SetCheckContent(AValue: boolean);
+begin
+  if FCheckContent=AValue then Exit;
+  FCheckContent:=AValue;
+end;
+
+procedure TFilters.SetCheckMaxDate(AValue: boolean);
+begin
+  if FCheckMaxDate=AValue then Exit;
+  FCheckMaxDate:=AValue;
+end;
+
+procedure TFilters.SetCheckMaxSize(AValue: boolean);
+begin
+  if FCheckMaxSize=AValue then Exit;
+  FCheckMaxSize:=AValue;
+end;
+
+procedure TFilters.SetCheckMinDate(AValue: boolean);
+begin
+  if FCheckMinDate=AValue then Exit;
+  FCheckMinDate:=AValue;
+end;
+
+procedure TFilters.SetCheckMinSize(AValue: boolean);
+begin
+  if FCheckMinSize=AValue then Exit;
+  FCheckMinSize:=AValue;
+end;
+
+procedure TFilters.SetContent(AValue: string);
+begin
+  if FContent=AValue then Exit;
+  FContent:=AValue;
+end;
+
+procedure TFilters.SetMask(AValue: string);
+begin
+  if FMask=AValue then Exit;
+  FMask:=AValue;
+end;
+
+procedure TFilters.SetMaxDate(AValue: TDateTime);
+begin
+  if FMaxDate=AValue then Exit;
+  FMaxDate:=AValue;
+end;
+
+procedure TFilters.SetMaxSize(AValue: int64);
+begin
+  if FMaxSize=AValue then Exit;
+  FMaxSize:=AValue;
+end;
+
+procedure TFilters.SetMinDate(AValue: TDateTime);
+begin
+  if FMinDate=AValue then Exit;
+  FMinDate:=AValue;
+end;
+
+procedure TFilters.SetMinSize(AValue: Int64);
+begin
+  if FMinSize=AValue then Exit;
+  FMinSize:=AValue;
+end;
+
+constructor TDirectoryScanner.CreateScanner(Paths: TStrings; Filters: TFilters);
 begin
   inherited Create(True);
   Priority     := tpIdle;
   CurrentPaths := TStringList.create;
   CurrentPaths.Assign(Paths);
-  FMasks:= Masks;
+  FFilters:= Filters;
   FreeOnTerminate := True;
 
 end;
@@ -72,13 +181,10 @@ begin
     begin
       Directory := IncludeTrailingPathDelimiter(Directory);
       {* extract the FileMasks portion out of Path *}
-      Masks := copy(Path, Length(Directory) + 1, Length(Path));
-    end
-    else
-      Masks := Path;
+    end;
 
     {* put the Masks into TStringlist *}
-    StrToStrings(Masks, ';', MaskList, False);
+    StrToStrings(FFilters.Mask, ';', MaskList, False);
 
     {* search all files in the directory *}
     Result := FindFirst(Directory + AllFilesMask, faAnyFile, SearchRec) = 0;
@@ -100,10 +206,10 @@ begin
             IsFileNameMatch(SearchRec.Name, MaskList.Strings[IndexMask], False) then
           begin
             Passed := true;
-            if Passed and Filter.CheckMinSize and (SearchRec.Size < filter.MinSize) then Passed := false;
-            if Passed and Filter.CheckMaxSize and (SearchRec.Size > filter.MaxSize) then Passed := false;
-            if Passed and Filter.CheckMinDate and (FileDateToDateTime(SearchRec.Time) < filter.MinDate) then Passed := false;
-            if Passed and Filter.CheckMaxDate and (FileDateToDateTime(SearchRec.Time) > filter.MaxDate) then Passed := false;
+            if Passed and FFilters.CheckMinSize and (SearchRec.Size < ffilters.MinSize) then Passed := false;
+            if Passed and FFilters.CheckMaxSize and (SearchRec.Size > ffilters.MaxSize) then Passed := false;
+            if Passed and FFilters.CheckMinDate and (FileDateToDateTime(SearchRec.Time) < ffilters.MinDate) then Passed := false;
+            if Passed and FFilters.CheckMaxDate and (FileDateToDateTime(SearchRec.Time) > ffilters.MaxDate) then Passed := false;
             if Passed then
               begin
                 info := TFileInfoObject.Create;
@@ -134,13 +240,12 @@ end;
 procedure TDirectoryScanner.Execute;
 var
   i: integer;
-  Filter: TFilters;
 begin
 
   for i:= 0 to CurrentPaths.Count -1 do
     begin
-      BuildFileList(IncludeTrailingPathDelimiter(CurrentPaths[i]) + FMasks,
-                    faAnyFile, True, filter);
+      BuildFileList(IncludeTrailingPathDelimiter(CurrentPaths[i]),
+                    faAnyFile, True, Ffilters);
     end;
 //
 //  for I := 0 to FileList.Count - 1 do
