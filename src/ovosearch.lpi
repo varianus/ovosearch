@@ -88,6 +88,20 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="FilesFunctions"/>
       </Unit>
+      <Unit>
+        <Filename Value="searchresult.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="jsontools.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="JsonTools"/>
+      </Unit>
+      <Unit>
+        <Filename Value="processthread.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ProcessThread"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

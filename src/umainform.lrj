@@ -5,6 +5,7 @@
 {"hash":354472,"name":"tform1.lbpath.editlabel.caption","sourcebytes":[80,97,116,104],"value":"Path"},
 {"hash":142787935,"name":"tform1.lbpath.text","sourcebytes":[47,104,111,109,101,47,118,97,114,105,97,110,117,115,47,100,101,118,101,108,111,112,109,101,110,116,47,108,97,122,97,114,117,115,47],"value":"/home/varianus/development/lazarus/"},
 {"hash":175958551,"name":"tform1.lbcontaining.editlabel.caption","sourcebytes":[67,111,110,116,97,105,110,105,110,103],"value":"Containing"},
+{"hash":186474248,"name":"tform1.lbcontaining.text","sourcebytes":[116,112,114,111,99,101,115,115,117,116,102,56],"value":"tprocessutf8"},
 {"hash":94079128,"name":"tform1.bsearch.caption","sourcebytes":[83,101,97,114,99,104],"value":"Search"},
 {"hash":346165,"name":"tform1.lvfiles.columns[0].caption","sourcebytes":[78,97,109,101],"value":"Name"},
 {"hash":354472,"name":"tform1.lvfiles.columns[1].caption","sourcebytes":[80,97,116,104],"value":"Path"},
