@@ -9,9 +9,9 @@ uses
 
 type
 
-  { TFoundItem }
+  { TFoundLine }
 
-  TFoundItem = class
+  TFoundLine = class
   private
     FColum: integer;
     FLine: string;
@@ -25,7 +25,7 @@ type
     property Line: string read FLine write SetLine;
   end;
 
-  TFoundItems = class(TObjectList<TFoundItem>)
+  TFoundLines = class(TObjectList<TFoundLine>)
 
   end;
 
@@ -33,11 +33,11 @@ type
   TFoundFile = class
   private
     FFileName: TFileName;
-    FLines: TFoundItems;
+    FLines: TFoundLines;
     procedure SetFileName(AValue: TFileName);
   public
     Property FileName: TFileName read FFileName write SetFileName;
-    property Lines: TFoundItems read FLines;
+    property Lines: TFoundLines read FLines;
     Constructor Create;
     Destructor Destroy; override;
   end;
@@ -62,7 +62,7 @@ end;
 constructor TFoundFile.Create;
 begin
   inherited Create;
-  FLines:= TFoundItems.Create;
+  FLines:= TFoundLines.Create;
 end;
 
 destructor TFoundFile.Destroy;
@@ -72,21 +72,21 @@ begin
   inherited Destroy;
 end;
 
-{ TFoundItem }
+{ TFoundLine }
 
-procedure TFoundItem.SetColum(AValue: integer);
+procedure TFoundLine.SetColum(AValue: integer);
 begin
   if FColum=AValue then Exit;
   FColum:=AValue;
 end;
 
-procedure TFoundItem.SetLine(AValue: string);
+procedure TFoundLine.SetLine(AValue: string);
 begin
   if FLine=AValue then Exit;
   FLine:=AValue;
 end;
 
-procedure TFoundItem.SetRow(AValue: integer);
+procedure TFoundLine.SetRow(AValue: integer);
 begin
   if FRow=AValue then Exit;
   FRow:=AValue;
