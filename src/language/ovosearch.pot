@@ -17,53 +17,77 @@ msgstr ""
 msgid "Root node must be an array or object"
 msgstr ""
 
-#: tform1.bsearch.caption
+#: tfmainform.bsearch.caption
+msgctxt "tfmainform.bsearch.caption"
 msgid "Search"
 msgstr ""
 
-#: tform1.caption
+#: tfmainform.bstop.caption
+msgid "Stop"
+msgstr ""
+
+#: tfmainform.caption
+msgctxt "tfmainform.caption"
 msgid "OvoSearch"
 msgstr ""
 
-#: tform1.lbcontaining.editlabel.caption
+#: tfmainform.grddetails.columns[0].title.caption
+msgctxt "tfmainform.grddetails.columns[0].title.caption"
+msgid "Title"
+msgstr ""
+
+#: tfmainform.grddetails.columns[1].title.caption
+msgctxt "tfmainform.grddetails.columns[1].title.caption"
+msgid "Title"
+msgstr ""
+
+#: tfmainform.lbcontaining.editlabel.caption
+msgctxt "tfmainform.lbcontaining.editlabel.caption"
 msgid "Containing"
 msgstr ""
 
-#: tform1.lbcontaining.text
+#: tfmainform.lbcontaining.text
+msgctxt "tfmainform.lbcontaining.text"
 msgid "tprocessutf8"
 msgstr ""
 
-#: tform1.lbfiles.editlabel.caption
+#: tfmainform.lbfiles.editlabel.caption
+msgctxt "tfmainform.lbfiles.editlabel.caption"
 msgid "Files"
 msgstr ""
 
-#: tform1.lbfiles.text
+#: tfmainform.lbfiles.text
+msgctxt "tfmainform.lbfiles.text"
 msgid "*.{pp,pas,inc}"
 msgstr ""
 
-#: tform1.lbpath.editlabel.caption
-msgctxt "tform1.lbpath.editlabel.caption"
+#: tfmainform.lbpath.editlabel.caption
+msgctxt "tfmainform.lbpath.editlabel.caption"
 msgid "Path"
 msgstr ""
 
-#: tform1.lbpath.text
-msgid "/home/varianus/development/lazarus/"
+#: tfmainform.lbpath.text
+msgctxt "tfmainform.lbpath.text"
+msgid "c:\\ex-d\\lazarus"
 msgstr ""
 
-#: tform1.lvfiles.columns[0].caption
+#: tfmainform.lvfiles.columns[0].caption
+msgctxt "tfmainform.lvfiles.columns[0].caption"
 msgid "Name"
 msgstr ""
 
-#: tform1.lvfiles.columns[1].caption
-msgctxt "tform1.lvfiles.columns[1].caption"
+#: tfmainform.lvfiles.columns[1].caption
+msgctxt "tfmainform.lvfiles.columns[1].caption"
 msgid "Path"
 msgstr ""
 
-#: tform1.lvfiles.columns[2].caption
+#: tfmainform.lvfiles.columns[2].caption
+msgctxt "tfmainform.lvfiles.columns[2].caption"
 msgid "Size"
 msgstr ""
 
-#: tform1.lvfiles.columns[3].caption
+#: tfmainform.lvfiles.columns[3].caption
+msgctxt "tfmainform.lvfiles.columns[3].caption"
 msgid "Date"
 msgstr ""
 

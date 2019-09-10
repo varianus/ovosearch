@@ -1,29 +1,79 @@
-object Form1: TForm1
+object fMainForm: TfMainForm
   Left = 1520
-  Height = 499
+  Height = 528
   Top = 33
-  Width = 951
+  Width = 1242
   Caption = 'OvoSearch'
-  ClientHeight = 499
-  ClientWidth = 951
+  ClientHeight = 528
+  ClientWidth = 1242
+  Font.Height = -12
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  Position = poScreenCenter
+  object lvFiles: TListView
+    Left = 0
+    Height = 393
+    Top = 112
+    Width = 592
+    Align = alLeft
+    Columns = <    
+      item
+        AutoSize = True
+        Caption = 'Name'
+        Width = 47
+      end    
+      item
+        AutoSize = True
+        Caption = 'Path'
+        Width = 39
+      end    
+      item
+        AutoSize = True
+        Caption = 'Size'
+        Width = 35
+      end    
+      item
+        AutoSize = True
+        Caption = 'Date'
+        Width = 39
+      end>
+    ReadOnly = True
+    RowSelect = True
+    TabOrder = 0
+    ViewStyle = vsReport
+    OnSelectItem = lvFilesSelectItem
+  end
+  object Splitter2: TSplitter
+    Left = 592
+    Height = 393
+    Top = 112
+    Width = 8
+  end
+  object Splitter1: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 8
+    Top = 104
+    Width = 1242
+    Align = alTop
+    ResizeAnchor = akTop
+  end
   object Panel1: TPanel
     Left = 0
     Height = 104
     Top = 0
-    Width = 951
+    Width = 1242
     Align = alTop
-    ClientHeight = 100
-    ClientWidth = 947
-    TabOrder = 0
+    ClientHeight = 104
+    ClientWidth = 1242
+    TabOrder = 3
     object lbFiles: TLabeledEdit
       Left = 115
-      Height = 29
+      Height = 23
       Top = 8
       Width = 656
-      EditLabel.Height = 17
-      EditLabel.Width = 25
+      EditLabel.Height = 15
+      EditLabel.Width = 23
       EditLabel.Caption = 'Files'
       EditLabel.ParentColor = False
       LabelPosition = lpLeft
@@ -32,24 +82,24 @@ object Form1: TForm1
     end
     object lbPath: TLabeledEdit
       Left = 115
-      Height = 29
+      Height = 23
       Top = 40
       Width = 656
-      EditLabel.Height = 17
-      EditLabel.Width = 25
+      EditLabel.Height = 15
+      EditLabel.Width = 24
       EditLabel.Caption = 'Path'
       EditLabel.ParentColor = False
       LabelPosition = lpLeft
       TabOrder = 1
-      Text = '/home/varianus/development/lazarus/'
+      Text = 'c:\ex-d\lazarus'
     end
     object lbContaining: TLabeledEdit
       Left = 115
-      Height = 29
+      Height = 23
       Top = 72
       Width = 656
-      EditLabel.Height = 17
-      EditLabel.Width = 60
+      EditLabel.Height = 15
+      EditLabel.Width = 59
       EditLabel.Caption = 'Containing'
       EditLabel.ParentColor = False
       LabelPosition = lpLeft
@@ -57,68 +107,86 @@ object Form1: TForm1
       Text = 'tprocessutf8'
     end
     object bSearch: TButton
-      Left = 864
+      Left = 1159
       Height = 25
-      Top = 64
+      Top = 40
       Width = 72
       Anchors = [akRight, akBottom]
+      Cancel = True
       Caption = 'Search'
+      Default = True
       OnClick = bSearchClick
       TabOrder = 3
     end
+    object ProgressBar1: TProgressBar
+      Left = 1131
+      Height = 20
+      Top = 8
+      Width = 100
+      TabOrder = 4
+      Visible = False
+    end
+    object bStop: TButton
+      Left = 1159
+      Height = 25
+      Top = 72
+      Width = 72
+      Anchors = [akRight, akBottom]
+      Caption = 'Stop'
+      OnClick = bStopClick
+      TabOrder = 5
+    end
   end
-  object Splitter1: TSplitter
-    Cursor = crVSplit
-    Left = 0
-    Height = 8
-    Top = 104
-    Width = 951
-    Align = alTop
-    ResizeAnchor = akTop
-  end
-  object lvFiles: TListView
-    Left = 0
-    Height = 387
+  object grdDetails: TDrawGrid
+    Left = 600
+    Height = 393
     Top = 112
-    Width = 491
-    Align = alLeft
+    Width = 642
+    Align = alClient
+    ColCount = 2
     Columns = <    
       item
-        AutoSize = True
-        Caption = 'Name'
-        Width = 1
+        Alignment = taRightJustify
+        ReadOnly = True
+        Title.Caption = 'Title'
       end    
       item
-        Caption = 'Path'
-        Width = 10
-      end    
-      item
-        Caption = 'Size'
-        Width = 10
-      end    
-      item
-        Caption = 'Date'
-        Width = 464
+        ReadOnly = True
+        Title.Caption = 'Title'
+        Width = 564
       end>
-    TabOrder = 2
-    OnData = lvFilesData
-    OnSelectItem = lvFilesSelectItem
-  end
-  object Splitter2: TSplitter
-    Left = 491
-    Height = 387
-    Top = 112
-    Width = 8
-  end
-  object Memo1: TMemo
-    Left = 499
-    Height = 387
-    Top = 112
-    Width = 452
-    Align = alClient
-    Lines.Strings = (
-      'Memo1'
-    )
+    ExtendedSelect = False
+    FixedCols = 0
+    FixedRows = 0
+    Options = [goRangeSelect, goSmoothScroll]
     TabOrder = 4
+    TitleFont.Height = -12
+    OnDrawCell = grdDetailsDrawCell
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 505
+    Width = 1242
+    Panels = <    
+      item
+        Width = 50
+      end    
+      item
+        Width = 50
+      end    
+      item
+        Width = 50
+      end>
+    SimplePanel = False
+  end
+  object tmrParseResult: TTimer
+    Enabled = False
+    Interval = 200
+    OnTimer = tmrParseResultTimer
+    OnStartTimer = tmrParseResultStartTimer
+    OnStopTimer = tmrParseResultStopTimer
+    Left = 855
+    Top = 31
   end
 end

@@ -9,24 +9,28 @@ uses
 
 type
 
-  TRunnerMessageKind= (ieInfo, ieCommand, ieError);
+  TMessageLineKind= (ieInfo, ieCommand, ieError);
 
-  TRunnerMessage = procedure (Sender: TObject; const MessageKind: TRunnerMessageKind; const Message: string) of object;
+  TMessageLineEvent = procedure (Sender: TObject; const MessageKind: TMessageLineKind; const Message: string) of object;
+  TMessageListEvent = procedure (Sender: TObject; Out MessageList: TStrings) of object;
 
   { TProcessThread }
 
   TProcessThread = class(TThread)
   private
-    FOnRunnerMessage: TRunnerMessage;
+    FOnMessageLine: TMessageLineEvent;
+    FOnMessageList: TMessageListEvent;
     fProcess: TProcess;
     fLines: TStringList;
-    procedure Elabora;
-    procedure SetOnRunnerMessage(AValue: TRunnerMessage);
+    procedure SendResults;
+    procedure SetOnMessageLine(AValue: TMessageLineEvent);
+    procedure SetOnMessageList(AValue: TMessageListEvent);
   protected
     procedure Execute; override;
   public
     property Process: TProcess read fProcess;
-    property OnRunnerMessage : TRunnerMessage read FOnRunnerMessage write SetOnRunnerMessage;
+    property OnMessageLine : TMessageLineEvent read FOnMessageLine write SetOnMessageLine;
+    property OnMessageList : TMessageListEvent read FOnMessageList write SetOnMessageList;
     Constructor Create;
     destructor Destroy; override;
 
@@ -35,25 +39,35 @@ type
 
 implementation
 uses
-  uMainForm, math;
+  math;
 { TProcessThread }
 
-procedure TProcessThread.Elabora;
+procedure TProcessThread.SendResults;
 var
   n: Integer;
 begin
   for n := 0 to fLines.Count - 1 do
     begin
-      if Assigned(FOnRunnerMessage)   then
-         FOnRunnerMessage(Self, ieInfo, Flines[n]);
+      if Assigned(FOnMessageLine)   then
+         FOnMessageLine(Self, ieInfo, Flines[n]);
     end;
+
+  if Assigned(FOnMessageList) then
+     FOnMessageList(Self,  FLines);
+
   fLines.Clear;
 end;
 
-procedure TProcessThread.SetOnRunnerMessage(AValue: TRunnerMessage);
+procedure TProcessThread.SetOnMessageLine(AValue: TMessageLineEvent);
 begin
-  if FOnRunnerMessage=AValue then Exit;
-  FOnRunnerMessage:=AValue;
+  if FOnMessageLine=AValue then Exit;
+  FOnMessageLine:=AValue;
+end;
+
+procedure TProcessThread.SetOnMessageList(AValue: TMessageListEvent);
+begin
+  if FOnMessageList=AValue then Exit;
+  FOnMessageList:=AValue;
 end;
 
 procedure TProcessThread.Execute;
@@ -101,7 +115,7 @@ var
   end;
 
 begin
-  SetLength(Buf,4096);
+  SetLength(Buf,16*1024);
   fLines:=TStringList.Create;
 
   fProcess.Execute;
@@ -109,7 +123,7 @@ begin
   while (not Terminated) do // and (FProcess.Running)  do
     begin
       HasOutput := ReadInputPipe(FProcess.Output,OutputLine,false);
-      Synchronize(@Elabora);
+      SendResults;
       if (not HasOutput) then
         if not FProcess.Running then
           break
@@ -119,11 +133,11 @@ begin
 
   if (OutputLine<>'') then
     fLines.Add(OutputLine);
-  Synchronize(@Elabora);
+
+  SendResults;
 
   fProcess.Terminate(100);
 
-  Synchronize(@Elabora);
   fLines.free;
 
 end;

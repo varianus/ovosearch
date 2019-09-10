@@ -9,7 +9,28 @@ uses
 
 type
 
+  { TThreadQueue }
+  TThreadQueue<T> = class (TQueue<T>)
+  Private
+    fLock : TRTLCriticalSection;
+  protected
+    function GetCount: SizeInt; override;
+  public
+    Constructor Create;
+    destructor Destroy; override;
+    procedure Enqueue(constref AValue: T); reintroduce;
+    function Dequeue: T;  reintroduce;
+    procedure Clear;  reintroduce;
+    function LockList: TThreadQueue<T>;
+    procedure UnlockList; inline;
+  end;
+
   { TFoundLine }
+  TSubMatch = record
+    Start, _End: integer;
+  end;
+
+  TSubMatches = array of TSubMatch;
 
   TFoundLine = class
   private
@@ -20,6 +41,7 @@ type
     procedure SetLine(AValue: string);
     procedure SetRow(AValue: integer);
   public
+    SubMatches: TSubMatches;
     property Row: integer read FRow write SetRow;
     property Colum: integer read FColum write SetColum;
     property Line: string read FLine write SetLine;
@@ -50,6 +72,76 @@ type
 
 
 implementation
+
+{ TThreadQueue }
+
+function TThreadQueue<T>.GetCount: SizeInt;
+begin
+  EnterCriticalSection(fLock);
+  try
+    Result := inherited GetCount;
+  finally
+    LeaveCriticalSection(fLock);
+  end;
+
+end;
+
+constructor TThreadQueue<T>.Create;
+begin
+  inherited Create;
+  InitCriticalSection(fLock);
+end;
+
+destructor TThreadQueue<T>.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+  DoneCriticalSection(fLock);
+end;
+
+procedure TThreadQueue<T>.Enqueue(constref AValue: T);
+begin
+  EnterCriticalSection(fLock);
+  try
+    inherited Enqueue(AValue);
+  finally
+    LeaveCriticalSection(fLock);
+  end;
+
+end;
+
+function TThreadQueue<T>.Dequeue: T;
+begin
+  EnterCriticalSection(fLock);
+  try
+    Result := inherited Dequeue;
+  finally
+    LeaveCriticalSection(fLock);
+  end;
+
+end;
+
+procedure TThreadQueue<T>.Clear;
+begin
+  EnterCriticalSection(fLock);
+  try
+    inherited Clear;
+  finally
+    LeaveCriticalSection(fLock);
+  end;
+
+end;
+
+function TThreadQueue<T>.LockList: TThreadQueue<T>;
+begin
+  EnterCriticalSection(fLock);
+  Result := self;
+end;
+
+procedure TThreadQueue<T>.UnlockList;
+begin
+  LeaveCriticalSection(fLock);
+end;
 
 { TFoundFile }
 
@@ -91,7 +183,6 @@ begin
   if FRow=AValue then Exit;
   FRow:=AValue;
 end;
-
 
 end.
 
