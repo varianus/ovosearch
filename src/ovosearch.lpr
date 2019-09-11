@@ -8,7 +8,8 @@ uses
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, uMainForm, DirectoryScanner, FilesFunctions, searchresult, jsontools,
-  ProcessThread
+  ProcessThread,
+  lazlogger
   { you can add units after this };
 
 {$R *.res}

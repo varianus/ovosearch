@@ -39,7 +39,7 @@ type
 
 implementation
 uses
-  math;
+  math, LazLoggerBase;
 { TProcessThread }
 
 procedure TProcessThread.SendResults;
@@ -90,6 +90,7 @@ var
     if Count=0 then exit;
     Count:=aStream.Read(Buf[1],Min(length(Buf),Count));
     if Count=0 then exit;
+    debugln(buf);
     Result:=true;
     StartPos:=1;
     i:=1;

@@ -1,9 +1,10 @@
 {"version":1,"strings":[
 {"hash":77323848,"name":"tfmainform.caption","sourcebytes":[79,118,111,83,101,97,114,99,104],"value":"OvoSearch"},
 {"hash":346165,"name":"tfmainform.lvfiles.columns[0].caption","sourcebytes":[78,97,109,101],"value":"Name"},
-{"hash":354472,"name":"tfmainform.lvfiles.columns[1].caption","sourcebytes":[80,97,116,104],"value":"Path"},
-{"hash":368901,"name":"tfmainform.lvfiles.columns[2].caption","sourcebytes":[83,105,122,101],"value":"Size"},
-{"hash":305317,"name":"tfmainform.lvfiles.columns[3].caption","sourcebytes":[68,97,116,101],"value":"Date"},
+{"hash":4877396,"name":"tfmainform.lvfiles.columns[1].caption","sourcebytes":[67,111,117,110,116],"value":"Count"},
+{"hash":354472,"name":"tfmainform.lvfiles.columns[2].caption","sourcebytes":[80,97,116,104],"value":"Path"},
+{"hash":368901,"name":"tfmainform.lvfiles.columns[3].caption","sourcebytes":[83,105,122,101],"value":"Size"},
+{"hash":305317,"name":"tfmainform.lvfiles.columns[4].caption","sourcebytes":[68,97,116,101],"value":"Date"},
 {"hash":5046979,"name":"tfmainform.lbfiles.editlabel.caption","sourcebytes":[70,105,108,101,115],"value":"Files"},
 {"hash":243651869,"name":"tfmainform.lbfiles.text","sourcebytes":[42,46,123,112,112,44,112,97,115,44,105,110,99,125],"value":"*.{pp,pas,inc}"},
 {"hash":354472,"name":"tfmainform.lbpath.editlabel.caption","sourcebytes":[80,97,116,104],"value":"Path"},
@@ -13,5 +14,10 @@
 {"hash":94079128,"name":"tfmainform.bsearch.caption","sourcebytes":[83,101,97,114,99,104],"value":"Search"},
 {"hash":371552,"name":"tfmainform.bstop.caption","sourcebytes":[83,116,111,112],"value":"Stop"},
 {"hash":5966629,"name":"tfmainform.grddetails.columns[0].title.caption","sourcebytes":[84,105,116,108,101],"value":"Title"},
-{"hash":5966629,"name":"tfmainform.grddetails.columns[1].title.caption","sourcebytes":[84,105,116,108,101],"value":"Title"}
+{"hash":5966629,"name":"tfmainform.grddetails.columns[1].title.caption","sourcebytes":[84,105,116,108,101],"value":"Title"},
+{"hash":346165,"name":"tfmainform.vtvresults.header.columns[0].text","sourcebytes":[78,97,109,101],"value":"Name"},
+{"hash":4877396,"name":"tfmainform.vtvresults.header.columns[1].text","sourcebytes":[67,111,117,110,116],"value":"Count"},
+{"hash":354472,"name":"tfmainform.vtvresults.header.columns[2].text","sourcebytes":[80,97,116,104],"value":"Path"},
+{"hash":368901,"name":"tfmainform.vtvresults.header.columns[3].text","sourcebytes":[83,105,122,101],"value":"Size"},
+{"hash":305317,"name":"tfmainform.vtvresults.header.columns[4].text","sourcebytes":[68,97,116,101],"value":"Date"}
 ]}

@@ -78,16 +78,46 @@ msgstr ""
 
 #: tfmainform.lvfiles.columns[1].caption
 msgctxt "tfmainform.lvfiles.columns[1].caption"
-msgid "Path"
+msgid "Count"
 msgstr ""
 
 #: tfmainform.lvfiles.columns[2].caption
 msgctxt "tfmainform.lvfiles.columns[2].caption"
-msgid "Size"
+msgid "Path"
 msgstr ""
 
 #: tfmainform.lvfiles.columns[3].caption
 msgctxt "tfmainform.lvfiles.columns[3].caption"
+msgid "Size"
+msgstr ""
+
+#: tfmainform.lvfiles.columns[4].caption
+msgctxt "tfmainform.lvfiles.columns[4].caption"
+msgid "Date"
+msgstr ""
+
+#: tfmainform.vtvresults.header.columns[0].text
+msgctxt "tfmainform.vtvresults.header.columns[0].text"
+msgid "Name"
+msgstr ""
+
+#: tfmainform.vtvresults.header.columns[1].text
+msgctxt "tfmainform.vtvresults.header.columns[1].text"
+msgid "Count"
+msgstr ""
+
+#: tfmainform.vtvresults.header.columns[2].text
+msgctxt "tfmainform.vtvresults.header.columns[2].text"
+msgid "Path"
+msgstr ""
+
+#: tfmainform.vtvresults.header.columns[3].text
+msgctxt "tfmainform.vtvresults.header.columns[3].text"
+msgid "Size"
+msgstr ""
+
+#: tfmainform.vtvresults.header.columns[4].text
+msgctxt "tfmainform.vtvresults.header.columns[4].text"
 msgid "Date"
 msgstr ""
 

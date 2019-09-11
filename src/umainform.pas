@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
-  StdCtrls, Grids, SynEdit, searchresult, ProcessThread, JsonTools,
-  FilesFunctions, Generics.Collections, Types;
+  StdCtrls, Grids, searchresult, ProcessThread, JsonTools,
+  FilesFunctions, Generics.Collections, Types, LazLoggerBase, laz.VirtualTrees;
 
 type
 
@@ -18,6 +18,7 @@ type
     bSearch: TButton;
     bStop: TButton;
     grdDetails: TDrawGrid;
+    vtvResults: TLazVirtualStringTree;
     lbContaining: TLabeledEdit;
     lbFiles: TLabeledEdit;
     lbPath: TLabeledEdit;
@@ -33,6 +34,10 @@ type
     procedure grdDetailsDrawCell(Sender: TObject; aCol, aRow: Integer; aRect: TRect; aState: TGridDrawState);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure vtvResultsAddToSelection(Sender: TBaseVirtualTree; Node: PVirtualNode);
+    procedure vtvResultsGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
+      TextType: TVSTTextType; var CellText: String);
+    procedure lvFilesData(Sender: TObject; Item: TListItem);
     procedure lvFilesSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
     procedure tmrParseResultStartTimer(Sender: TObject);
@@ -51,6 +56,11 @@ type
     procedure UpdateForm;
   public
 
+  end;
+
+  PNodeData = ^TNodeData;
+  TNodeData = record
+    Data: pointer;
   end;
 
 var
@@ -79,10 +89,11 @@ procedure TfMainForm.ParseMessages;
 var
   Line: TFoundLine;
   Node: TJsonNode;
+  TreeNode : PVirtualNode;
+  tmpData: PNodeData;
   tmpNode: TJsonNode;
   Message: string;
-  Info: TFileInfo;
-  Item:TListItem;
+//  Item:TListItem;
   i, J: integer;
 
 begin
@@ -96,31 +107,37 @@ begin
           CurrObj := TFoundFile.Create;
           CurrObj.FileName:=Node.Find('data/path/text').AsString;
           FoundFiles.Add(CurrObj);
-          item := lvFiles.Items.Add;
-          Item.Caption:=ExtractFileName(CurrObj.FileName);
-          item.Data := CurrObj;
-          Info := GetFileInfo(CurrObj.fileName);
-          item.SubItems.Add(ExtractFilePath(CurrObj.FileName));
-          item.SubItems.Add(strByteSize(Info.Size));
-          item.SubItems.Add(DateTimeToStr(Info.ModifyDate));
+          CurrObj.FileInfo := GetFileInfo(CurrObj.fileName);
+    //      item := lvFiles.Items.Add;
+    //      item.Data := CurrObj;
+         TreeNode := vtvResults.AddChild(nil);
+         tmpData := vtvResults.GetNodeData(TreeNode);
+         tmpData^.Data := CurrObj;
+
         end;
       if Node.Find('type').Value = '"match"'   then
         begin
           Line := TFoundLine.Create;
           line.Line:= node.find('data/lines/text').AsString;
           line.Row:= trunc(node.Find('data/line_number').AsNumber);
-          CurrObj.Lines.Add(line);
+          CurrObj.FoundLines.Add(line);
           j := Node.Find('data/submatches').Count;
           SetLength(line.SubMatches, j);
           for i:= 0 to j -1 do
             begin
               tmpNode := Node.Find('data/submatches').Child(i);
-              Line.SubMatches[i].Start := trunc(tmpnode.find('start').AsNumber);
-              Line.SubMatches[i]._End := trunc(tmpnode.find('end').AsNumber);
+              Line.SubMatches[i].Start := trunc(tmpnode.find('start').AsInteger);
+              Line.SubMatches[i]._End := trunc(tmpnode.find('end').AsInteger);
             end;
 
         end;
       if Node.Find('type').Value = '"end"'   then
+        begin
+          CurrObj.MatchedLine := node.Find('data/stats/matched_lines').AsInteger;
+          CurrObj.Matches := node.Find('data/stats/matches').AsInteger;
+        end;
+
+      if Node.Find('type').Value = '"summary"'   then
         begin
         end;
 
@@ -180,6 +197,7 @@ begin
 //  pr.Parameters.add('--trace');
 //  pr.Process.Parameters.Add('--color');  pr.Process.Parameters.add('never');
 //  pr.Process.Parameters.add('--column');
+
   pr.Process.Parameters.add('--line-buffered');
   pr.Process.Parameters.add('-n');
   pr.Process.Parameters.add('-i');
@@ -188,7 +206,7 @@ begin
   pr.Process.Parameters.add('-e');  pr.Process.Parameters.add(lbContaining.Text);
   pr.Process.Parameters.add('-g');  pr.Process.Parameters.add(lbFiles.Text);
   pr.Process.Parameters.add(lbPath.Text);
-//  lbPath.Caption := pr.Process.Executable + ' '+ ReplaceLineEndings(pr.Process.Parameters.text, ' ');
+  debugLn(pr.Process.Executable + ' '+ ReplaceLineEndings(pr.Process.Parameters.text, ' '));
   pr.OnTerminate := @StopTimer;
 
   pr.OnMessageLine:=@GotMessage;
@@ -246,9 +264,9 @@ var
   ts: TTextStyle;
 begin
   if not Assigned(CurrObj) then exit;
-  if aRow >= CurrObj.Lines.Count then exit;
+  if aRow >= CurrObj.FoundLines.Count then exit;
 
-  Match := CurrObj.Lines[aRow];
+  Match := CurrObj.FoundLines[aRow];
   grdDetails.Canvas.FillRect(arect);
 
   InflateRect(aRect,-3,-3);
@@ -276,7 +294,7 @@ procedure TfMainForm.FormCreate(Sender: TObject);
 begin
   FoundFiles := TFoundFiles.Create;
   MessageQueue := specialize TThreadQueue<string>.Create;
-
+  vtvResults.NodeDataSize := SizeOf(TNodeData);
 end;
 
 procedure TfMainForm.FormDestroy(Sender: TObject);
@@ -286,13 +304,53 @@ begin
   MessageQueue.free;
 end;
 
+procedure TfMainForm.vtvResultsAddToSelection(Sender: TBaseVirtualTree; Node: PVirtualNode);
+begin
+  if not assigned(Node) then exit;
+  CurrObj := FoundFiles[Node^.Index]; // TFoundFile(PNodeData(vtvResults.GetNodeData(Node))^.Data);
+
+  //Currobj := TFoundFile(item.Data);
+  grdDetails.RowCount:=CurrObj.FoundLines.Count;
+  grdDetails.invalidate;
+end;
+
+procedure TfMainForm.vtvResultsGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
+  TextType: TVSTTextType; var CellText: String);
+var
+ Data: TFoundFile;
+begin
+  Data := FoundFiles[Node^.Index]; // TFoundFile(PNodeData(vtvResults.GetNodeData(Node))^.Data);
+  case column of
+    0: CellText:=ExtractFileName(data.FileName);
+    1: CellText:=(IntToStr(data.Matches));
+    2: CellText:=(ExtractFilePath(Data.FileName));
+    3: CellText:=(strByteSize(Data.FileInfo.Size));
+    4: CellText:=(DateTimeToStr(Data.FileInfo.ModifyDate));
+
+  end;
+
+end;
+
+procedure TfMainForm.lvFilesData(Sender: TObject; Item: TListItem);
+var
+  Data: TFoundFile;
+begin
+  Data := TFoundFile(Item.Data);
+  Item.Caption:=ExtractFileName(data.FileName);
+  item.SubItems.Add(IntToStr(data.Matches));
+  item.SubItems.Add(ExtractFilePath(Data.FileName));
+  item.SubItems.Add(strByteSize(Data.FileInfo.Size));
+  item.SubItems.Add(DateTimeToStr(Data.FileInfo.ModifyDate));
+
+end;
+
 procedure TfMainForm.lvFilesSelectItem(Sender: TObject; Item: TListItem;
   Selected: Boolean);
 
 begin
   if not selected then exit;
   Currobj := TFoundFile(item.Data);
-  grdDetails.RowCount:=CurrObj.Lines.Count;
+  grdDetails.RowCount:=CurrObj.FoundLines.Count;
   grdDetails.invalidate;
 
 end;

@@ -11,16 +11,20 @@ object fMainForm: TfMainForm
   OnDestroy = FormDestroy
   Position = poScreenCenter
   object lvFiles: TListView
-    Left = 0
+    Left = 568
     Height = 393
     Top = 112
-    Width = 592
+    Width = 16
     Align = alLeft
     Columns = <    
       item
         AutoSize = True
         Caption = 'Name'
         Width = 47
+      end    
+      item
+        Alignment = taRightJustify
+        Caption = 'Count'
       end    
       item
         AutoSize = True
@@ -37,14 +41,17 @@ object fMainForm: TfMainForm
         Caption = 'Date'
         Width = 39
       end>
+    OwnerData = True
     ReadOnly = True
     RowSelect = True
     TabOrder = 0
+    Visible = False
     ViewStyle = vsReport
+    OnData = lvFilesData
     OnSelectItem = lvFilesSelectItem
   end
   object Splitter2: TSplitter
-    Left = 592
+    Left = 584
     Height = 393
     Top = 112
     Width = 8
@@ -138,10 +145,10 @@ object fMainForm: TfMainForm
     end
   end
   object grdDetails: TDrawGrid
-    Left = 600
+    Left = 592
     Height = 393
     Top = 112
-    Width = 642
+    Width = 650
     Align = alClient
     ColCount = 2
     Columns = <    
@@ -179,6 +186,50 @@ object fMainForm: TfMainForm
         Width = 50
       end>
     SimplePanel = False
+  end
+  object vtvResults: TLazVirtualStringTree
+    Left = 0
+    Height = 393
+    Top = 112
+    Width = 568
+    Align = alLeft
+    DefaultText = 'Node'
+    Header.AutoSizeIndex = -1
+    Header.Columns = <    
+      item
+        Position = 0
+        Text = 'Name'
+        Width = 164
+      end    
+      item
+        Position = 1
+        Text = 'Count'
+        Width = 100
+      end    
+      item
+        Position = 2
+        Text = 'Path'
+        Width = 100
+      end    
+      item
+        Position = 3
+        Text = 'Size'
+        Width = 100
+      end    
+      item
+        Position = 4
+        Text = 'Date'
+        Width = 100
+      end>
+    Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoShowSortGlyphs, hoVisible]
+    TabOrder = 6
+    TreeOptions.AutoOptions = [toAutoDropExpand, toAutoScrollOnExpand, toAutoSort, toAutoSpanColumns, toAutoTristateTracking, toAutoDeleteMovedNodes, toAutoChangeScale]
+    TreeOptions.MiscOptions = [toFullRepaintOnResize, toGridExtensions, toInitOnSave, toReportMode, toToggleOnDblClick, toWheelPanning]
+    TreeOptions.PaintOptions = [toShowVertGridLines, toThemeAware, toUseBlendedImages, toHideTreeLinesIfThemed]
+    TreeOptions.SelectionOptions = [toFullRowSelect, toAlwaysSelectNode]
+    TreeOptions.StringOptions = [toSaveCaptions]
+    OnAddToSelection = vtvResultsAddToSelection
+    OnGetText = vtvResultsGetText
   end
   object tmrParseResult: TTimer
     Enabled = False
