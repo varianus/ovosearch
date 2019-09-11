@@ -103,6 +103,9 @@ type
     procedure SetAsString(const Value: string);
     function GetAsNumber: Double;
     procedure SetAsNumber(Value: Double);
+    function GetAsInteger: integer;
+    procedure SetAsInteger(AValue: integer);
+
   public
     { A parent node owns all children. Only destroy a node if it has no parent.
       To destroy a child node use Delete or Clear methods instead. }
@@ -179,6 +182,7 @@ type
     property AsString: string read GetAsString write SetAsString;
     { Convert the node to a number }
     property AsNumber: Double read GetAsNumber write SetAsNumber;
+    property AsInteger: integer read GetAsInteger write SetAsInteger;
   end;
 
 { JsonValidate tests if a string contains a valid json format }
@@ -541,6 +545,20 @@ begin
   Error;
 end;
 
+function TJsonNode.GetAsInteger: integer;
+begin
+  if FParent = nil then
+    Error(SRootNodeKind);
+  if FKind <> nkNumber then
+  begin
+    Clear;
+    FKind := nkNumber;
+    FValue := '0';
+    Exit(0);
+  end;
+  Result := StrToIntDef(FValue, 0);
+end;
+
 procedure TJsonNode.ParseArray(Node: TJsonNode; var C: PChar);
 var
   T: TJsonToken;
@@ -687,6 +705,19 @@ begin
   Result := Self;
   while Result.FParent <> nil do
     Result := Result.FParent;
+end;
+
+procedure TJsonNode.SetAsInteger(AValue: integer);
+begin
+  if FParent = nil then
+    Error(SRootNodeKind);
+  if FKind <> nkNumber then
+  begin
+    Clear;
+    FKind := nkNumber;
+  end;
+  FValue := IntToStr(AValue);
+
 end;
 
 procedure TJsonNode.SetKind(Value: TJsonNodeKind);
