@@ -5,7 +5,7 @@ unit searchresult;
 interface
 
 uses
-  Classes, SysUtils, Generics.Collections;
+  Classes, SysUtils, Generics.Collections, FilesFunctions;
 
 type
 
@@ -54,12 +54,20 @@ type
   { TFoundFile }
   TFoundFile = class
   private
+    FFileInfo: TFileInfo;
     FFileName: TFileName;
-    FLines: TFoundLines;
+    FFoundLines: TFoundLines;
+    FMatchedLine: integer;
+    FMatches: Integer;
     procedure SetFileName(AValue: TFileName);
+    procedure SetMatchedLine(AValue: integer);
+    procedure SetMatches(AValue: Integer);
   public
     Property FileName: TFileName read FFileName write SetFileName;
-    property Lines: TFoundLines read FLines;
+    property FoundLines: TFoundLines read FFoundLines;
+    property Matches: Integer read FMatches write SetMatches;
+    property MatchedLine: integer read FMatchedLine write SetMatchedLine;
+    property FileInfo: TFileInfo read FFileInfo write FFileInfo;
     Constructor Create;
     Destructor Destroy; override;
   end;
@@ -151,15 +159,27 @@ begin
   FFileName:=AValue;
 end;
 
+procedure TFoundFile.SetMatchedLine(AValue: integer);
+begin
+  if FMatchedLine = AValue then Exit;
+  FMatchedLine := AValue;
+end;
+
+procedure TFoundFile.SetMatches(AValue: Integer);
+begin
+  if FMatches = AValue then Exit;
+  FMatches := AValue;
+end;
+
 constructor TFoundFile.Create;
 begin
   inherited Create;
-  FLines:= TFoundLines.Create;
+  FFoundLines:= TFoundLines.Create;
 end;
 
 destructor TFoundFile.Destroy;
 begin
-  FLines.Free;
+  FFoundLines.Free;
 
   inherited Destroy;
 end;
