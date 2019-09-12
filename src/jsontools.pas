@@ -146,7 +146,7 @@ type
     { Get a child node by name. If no node is found nil will be returned. }
     function Child(const Name: string): TJsonNode; overload;
     { Search for a node using a path string }
-    function Find(const Path: string): TJsonNode;
+    function Find(const Path: string; AllowCreate:boolean=false): TJsonNode;
     { Format the node and all its children as json }
     function ToString: string; override;
     { Root node is read only. A node the root when it has no parent. }
@@ -472,6 +472,8 @@ begin
   S := TStringStream.Create('');
   try
     S.CopyFrom(F, 0);
+    if S.Size = 0 then
+      Exit;
     Parse(S.DataString);
   finally
     S.Free;
@@ -485,7 +487,7 @@ var
   S: TStringStream;
 begin
   F := TFileStream.Create(FileName, fmCreate);
-  S := TStringStream.Create(AsString);
+  S := TStringStream.Create(AsJson);
   try
     F.CopyFrom(S, 0);
   finally
@@ -1038,9 +1040,9 @@ begin
     end;
 end;
 
-function TJsonNode.Find(const Path: string): TJsonNode;
+function TJsonNode.Find(const Path: string; AllowCreate:boolean=false): TJsonNode;
 var
-  N: TJsonNode;
+  N,N1: TJsonNode;
   A, B: PChar;
   S: string;
 begin
@@ -1070,9 +1072,16 @@ begin
     if B^ = '/' then
     begin
       SetString(S, A, B - A);
-      N := N.Child(S);
-      if N = nil then
-        Exit(nil);
+      N1 := N.Child(S);
+      if N1 = nil then
+        begin
+          if AllowCreate then
+            N := N.Add(S)
+          else
+            Exit(nil);
+        end
+      else
+        N := n1;
       A := B + 1;
       B := A;
     end
@@ -1082,8 +1091,13 @@ begin
       if B^ = #0 then
       begin
         SetString(S, A, B - A);
-        N := N.Child(S);
+        N1 := N.Child(S);
+        if N1 = nil then
+          if AllowCreate then
+            N1 := N.Add(S);
+        N := N1
       end;
+
     end;
   end;
   Result := N;
