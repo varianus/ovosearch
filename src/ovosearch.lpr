@@ -9,7 +9,7 @@ uses
   Interfaces, // this includes the LCL widgetset
   Forms, uMainForm, DirectoryScanner, FilesFunctions, searchresult, jsontools,
   ProcessThread,
-  lazlogger
+  lazlogger, Config
   { you can add units after this };
 
 {$R *.res}

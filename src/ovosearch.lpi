@@ -102,6 +102,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="ProcessThread"/>
       </Unit>
+      <Unit>
+        <Filename Value="config.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Config"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

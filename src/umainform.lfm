@@ -2,56 +2,16 @@ object fMainForm: TfMainForm
   Left = 1520
   Height = 528
   Top = 33
-  Width = 1242
+  Width = 983
   Caption = 'OvoSearch'
   ClientHeight = 528
-  ClientWidth = 1242
+  ClientWidth = 983
   Font.Height = -12
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  object lvFiles: TListView
-    Left = 568
-    Height = 393
-    Top = 112
-    Width = 16
-    Align = alLeft
-    Columns = <    
-      item
-        AutoSize = True
-        Caption = 'Name'
-        Width = 47
-      end    
-      item
-        Alignment = taRightJustify
-        Caption = 'Count'
-      end    
-      item
-        AutoSize = True
-        Caption = 'Path'
-        Width = 39
-      end    
-      item
-        AutoSize = True
-        Caption = 'Size'
-        Width = 35
-      end    
-      item
-        AutoSize = True
-        Caption = 'Date'
-        Width = 39
-      end>
-    OwnerData = True
-    ReadOnly = True
-    RowSelect = True
-    TabOrder = 0
-    Visible = False
-    ViewStyle = vsReport
-    OnData = lvFilesData
-    OnSelectItem = lvFilesSelectItem
-  end
   object Splitter2: TSplitter
-    Left = 584
+    Left = 528
     Height = 393
     Top = 112
     Width = 8
@@ -61,7 +21,7 @@ object fMainForm: TfMainForm
     Left = 0
     Height = 8
     Top = 104
-    Width = 1242
+    Width = 983
     Align = alTop
     ResizeAnchor = akTop
   end
@@ -69,11 +29,11 @@ object fMainForm: TfMainForm
     Left = 0
     Height = 104
     Top = 0
-    Width = 1242
+    Width = 983
     Align = alTop
     ClientHeight = 104
-    ClientWidth = 1242
-    TabOrder = 3
+    ClientWidth = 983
+    TabOrder = 2
     object lbFiles: TLabeledEdit
       Left = 115
       Height = 23
@@ -114,7 +74,7 @@ object fMainForm: TfMainForm
       Text = 'tprocessutf8'
     end
     object bSearch: TButton
-      Left = 1159
+      Left = 900
       Height = 25
       Top = 40
       Width = 72
@@ -125,30 +85,30 @@ object fMainForm: TfMainForm
       OnClick = bSearchClick
       TabOrder = 3
     end
-    object ProgressBar1: TProgressBar
-      Left = 1131
-      Height = 20
-      Top = 8
-      Width = 100
-      TabOrder = 4
-      Visible = False
-    end
     object bStop: TButton
-      Left = 1159
+      Left = 900
       Height = 25
       Top = 72
       Width = 72
       Anchors = [akRight, akBottom]
       Caption = 'Stop'
       OnClick = bStopClick
+      TabOrder = 4
+    end
+    object rbCaseSensitive: TCheckBox
+      Left = 791
+      Height = 19
+      Top = 72
+      Width = 93
+      Caption = 'Case sensitive'
       TabOrder = 5
     end
   end
   object grdDetails: TDrawGrid
-    Left = 592
+    Left = 536
     Height = 393
     Top = 112
-    Width = 650
+    Width = 447
     Align = alClient
     ColCount = 2
     Columns = <    
@@ -166,7 +126,7 @@ object fMainForm: TfMainForm
     FixedCols = 0
     FixedRows = 0
     Options = [goRangeSelect, goSmoothScroll]
-    TabOrder = 4
+    TabOrder = 3
     TitleFont.Height = -12
     OnDrawCell = grdDetailsDrawCell
   end
@@ -174,10 +134,10 @@ object fMainForm: TfMainForm
     Left = 0
     Height = 23
     Top = 505
-    Width = 1242
+    Width = 983
     Panels = <    
       item
-        Width = 50
+        Width = 150
       end    
       item
         Width = 50
@@ -191,7 +151,7 @@ object fMainForm: TfMainForm
     Left = 0
     Height = 393
     Top = 112
-    Width = 568
+    Width = 528
     Align = alLeft
     DefaultText = 'Node'
     Header.AutoSizeIndex = -1
@@ -204,17 +164,17 @@ object fMainForm: TfMainForm
       item
         Position = 1
         Text = 'Count'
-        Width = 100
+        Width = 45
       end    
       item
         Position = 2
         Text = 'Path'
-        Width = 100
+        Width = 200
       end    
       item
         Position = 3
         Text = 'Size'
-        Width = 100
+        Width = 60
       end    
       item
         Position = 4
@@ -222,7 +182,7 @@ object fMainForm: TfMainForm
         Width = 100
       end>
     Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoShowSortGlyphs, hoVisible]
-    TabOrder = 6
+    TabOrder = 5
     TreeOptions.AutoOptions = [toAutoDropExpand, toAutoScrollOnExpand, toAutoSort, toAutoSpanColumns, toAutoTristateTracking, toAutoDeleteMovedNodes, toAutoChangeScale]
     TreeOptions.MiscOptions = [toFullRepaintOnResize, toGridExtensions, toInitOnSave, toReportMode, toToggleOnDblClick, toWheelPanning]
     TreeOptions.PaintOptions = [toShowVertGridLines, toThemeAware, toUseBlendedImages, toHideTreeLinesIfThemed]
@@ -237,7 +197,7 @@ object fMainForm: TfMainForm
     OnTimer = tmrParseResultTimer
     OnStartTimer = tmrParseResultStartTimer
     OnStopTimer = tmrParseResultStopTimer
-    Left = 855
-    Top = 31
+    Left = 1064
+    Top = 24
   end
 end

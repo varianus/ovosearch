@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
   StdCtrls, Grids, searchresult, ProcessThread, JsonTools,
-  FilesFunctions, Generics.Collections, Types, LazLoggerBase, laz.VirtualTrees;
+  FilesFunctions, Config, Generics.Collections, Types, LazLoggerBase, laz.VirtualTrees;
 
 type
 
@@ -18,13 +18,12 @@ type
     bSearch: TButton;
     bStop: TButton;
     grdDetails: TDrawGrid;
+    rbCaseSensitive: TCheckBox;
     vtvResults: TLazVirtualStringTree;
     lbContaining: TLabeledEdit;
     lbFiles: TLabeledEdit;
     lbPath: TLabeledEdit;
-    lvFiles: TListView;
     Panel1: TPanel;
-    ProgressBar1: TProgressBar;
     Splitter1: TSplitter;
     Splitter2: TSplitter;
     StatusBar1: TStatusBar;
@@ -37,9 +36,6 @@ type
     procedure vtvResultsAddToSelection(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vtvResultsGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
       TextType: TVSTTextType; var CellText: String);
-    procedure lvFilesData(Sender: TObject; Item: TListItem);
-    procedure lvFilesSelectItem(Sender: TObject; Item: TListItem;
-      Selected: Boolean);
     procedure tmrParseResultStartTimer(Sender: TObject);
     procedure tmrParseResultStopTimer(Sender: TObject);
     procedure tmrParseResultTimer(Sender: TObject);
@@ -47,6 +43,7 @@ type
     FoundFiles: TFoundFiles;
     CurrObj : TFoundFile;
     pr: TProcessThread;
+    RipGrepExecutable: String;
     MessageQueue: specialize TThreadQueue<string>;
     procedure GotMessage(Sender: TObject;
       const MessageKind: TMessageLineKind; const Message: string);
@@ -56,11 +53,6 @@ type
     procedure UpdateForm;
   public
 
-  end;
-
-  PNodeData = ^TNodeData;
-  TNodeData = record
-    Data: pointer;
   end;
 
 var
@@ -89,8 +81,7 @@ procedure TfMainForm.ParseMessages;
 var
   Line: TFoundLine;
   Node: TJsonNode;
-  TreeNode : PVirtualNode;
-  tmpData: PNodeData;
+//  TreeNode : PVirtualNode;
   tmpNode: TJsonNode;
   Message: string;
 //  Item:TListItem;
@@ -108,12 +99,8 @@ begin
           CurrObj.FileName:=Node.Find('data/path/text').AsString;
           FoundFiles.Add(CurrObj);
           CurrObj.FileInfo := GetFileInfo(CurrObj.fileName);
-    //      item := lvFiles.Items.Add;
-    //      item.Data := CurrObj;
-         TreeNode := vtvResults.AddChild(nil);
-         tmpData := vtvResults.GetNodeData(TreeNode);
-         tmpData^.Data := CurrObj;
-
+          //TreeNode :=
+          vtvResults.AddChild(nil);
         end;
       if Node.Find('type').Value = '"match"'   then
         begin
@@ -184,23 +171,31 @@ end;
 
 
 procedure TfMainForm.bSearchClick(Sender: TObject);
+var
+ s:string;
 begin
-  lvFiles.Clear;
+  vtvResults.Clear;
   FoundFiles.Clear;
 
   pr := TProcessThread.Create;
   pr.FreeOnTerminate:=true;
-//  pr.Process.Executable:= '/usr/bin/rg';
 
-  pr.Process.Executable:= 'C:\-\rg\rg.exe';
+  //  pr.Process.Executable:= '/usr/bin/rg';
 
-//  pr.Parameters.add('--trace');
-//  pr.Process.Parameters.Add('--color');  pr.Process.Parameters.add('never');
-//  pr.Process.Parameters.add('--column');
+  if trim(RipGrepExecutable) = EmptyStr then
+     begin
+       // try some default
+       // message to user
+       // Open config
+     end;
+  pr.Process.Executable:= RipGrepExecutable;
 
   pr.Process.Parameters.add('--line-buffered');
   pr.Process.Parameters.add('-n');
-  pr.Process.Parameters.add('-i');
+
+  if not rbCaseSensitive.Checked then
+    pr.Process.Parameters.add('-i');
+
   pr.Process.Parameters.add('--json');
 
   pr.Process.Parameters.add('-e');  pr.Process.Parameters.add(lbContaining.Text);
@@ -294,11 +289,15 @@ procedure TfMainForm.FormCreate(Sender: TObject);
 begin
   FoundFiles := TFoundFiles.Create;
   MessageQueue := specialize TThreadQueue<string>.Create;
-  vtvResults.NodeDataSize := SizeOf(TNodeData);
+  rbCaseSensitive.Checked := ConfigObj.ReadBoolean('search/casesensitive', false);
+  RipGrepExecutable:= ConfigObj.ReadString('ripgrep/executable', '');
+
 end;
 
 procedure TfMainForm.FormDestroy(Sender: TObject);
 begin
+  ConfigObj.writeBoolean('search/casesensitive', rbCaseSensitive.Checked);
+  ConfigObj.WriteString('ripgrep/executable', RipGrepExecutable);
   FoundFiles.Free;
   tmrParseResult.Enabled := false;
   MessageQueue.free;
@@ -309,7 +308,6 @@ begin
   if not assigned(Node) then exit;
   CurrObj := FoundFiles[Node^.Index]; // TFoundFile(PNodeData(vtvResults.GetNodeData(Node))^.Data);
 
-  //Currobj := TFoundFile(item.Data);
   grdDetails.RowCount:=CurrObj.FoundLines.Count;
   grdDetails.invalidate;
 end;
@@ -331,40 +329,16 @@ begin
 
 end;
 
-procedure TfMainForm.lvFilesData(Sender: TObject; Item: TListItem);
-var
-  Data: TFoundFile;
-begin
-  Data := TFoundFile(Item.Data);
-  Item.Caption:=ExtractFileName(data.FileName);
-  item.SubItems.Add(IntToStr(data.Matches));
-  item.SubItems.Add(ExtractFilePath(Data.FileName));
-  item.SubItems.Add(strByteSize(Data.FileInfo.Size));
-  item.SubItems.Add(DateTimeToStr(Data.FileInfo.ModifyDate));
-
-end;
-
-procedure TfMainForm.lvFilesSelectItem(Sender: TObject; Item: TListItem;
-  Selected: Boolean);
-
-begin
-  if not selected then exit;
-  Currobj := TFoundFile(item.Data);
-  grdDetails.RowCount:=CurrObj.FoundLines.Count;
-  grdDetails.invalidate;
-
-end;
-
 procedure TfMainForm.tmrParseResultStartTimer(Sender: TObject);
 begin
-  ProgressBar1.Visible := true;
-  ProgressBar1.Style := pbstMarquee;
+  StatusBar1.Panels[0].Text := 'Searching';
+  Application.ProcessMessages;
 end;
 
 procedure TfMainForm.tmrParseResultStopTimer(Sender: TObject);
 begin
-  ProgressBar1.Visible := False;
-  ProgressBar1.Style := pbstNormal;
+  StatusBar1.Panels[0].Text := '';
+  Application.ProcessMessages;
 
 end;
 
