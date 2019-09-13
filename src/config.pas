@@ -70,7 +70,7 @@ implementation
 
 { TConfig }
 uses
-  Fileutil, lclproc
+  Fileutil
   // only for default font !
 {$ifdef Darwin}
   , MacOSAll
@@ -246,7 +246,7 @@ begin
     ExtractFilePath(ExtractFilePath(ParamStr(0))));
 {$else}
   {$ifndef DARWIN}
-  ResourcesPath := fConfigHolder.Find(SectionUnix + '/' + IdentResourcesPath, DefaultDirectory).AsString;
+  ResourcesPath := ReadString(SectionUnix + '/' + IdentResourcesPath, DefaultDirectory);
   {$endif}
 {$endif}
 
