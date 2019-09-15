@@ -18,11 +18,14 @@ type
     bSearch: TButton;
     bStop: TButton;
     grdDetails: TDrawGrid;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    lbContaining: TComboBox;
+    lbFiles: TComboBox;
+    lbPath: TComboBox;
     rbCaseSensitive: TCheckBox;
     vtvResults: TLazVirtualStringTree;
-    lbContaining: TLabeledEdit;
-    lbFiles: TLabeledEdit;
-    lbPath: TLabeledEdit;
     Panel1: TPanel;
     Splitter1: TSplitter;
     Splitter2: TSplitter;
@@ -43,6 +46,9 @@ type
     FoundFiles: TFoundFiles;
     CurrObj : TFoundFile;
     pr: TProcessThread;
+    FilesHistory: TSimpleHistory;
+    PathsHistory: TSimpleHistory;
+    ContentsHistory: TSimpleHistory;
     RipGrepExecutable: String;
     MessageQueue: specialize TThreadQueue<string>;
     procedure GotMessage(Sender: TObject;
@@ -170,10 +176,15 @@ begin
 end;
 
 
+
 procedure TfMainForm.bSearchClick(Sender: TObject);
 var
  s:string;
 begin
+  lbFiles.AddHistoryItem(lbFiles.Text, 10, true,true);
+  lbPath.AddHistoryItem(lbPath.Text,10, true,true);
+  lbContaining.AddHistoryItem(lbContaining.Text,10, true,true);
+
   vtvResults.Clear;
   FoundFiles.Clear;
 
@@ -292,6 +303,13 @@ begin
   rbCaseSensitive.Checked := ConfigObj.ReadBoolean('search/casesensitive', false);
   RipGrepExecutable:= ConfigObj.ReadString('ripgrep/executable', '');
 
+  ConfigObj.ReadStrings('history/files', lbFiles.Items);
+  lbFiles.ItemIndex:=0;
+  ConfigObj.ReadStrings('history/paths', lbPath.Items);
+  lbPath.ItemIndex:=0;
+  ConfigObj.ReadStrings('history/contents', lbContaining.Items);
+  lbContaining.ItemIndex:=0;
+
 end;
 
 procedure TfMainForm.FormDestroy(Sender: TObject);
@@ -301,6 +319,11 @@ begin
   FoundFiles.Free;
   tmrParseResult.Enabled := false;
   MessageQueue.free;
+
+  ConfigObj.WriteStrings('history/files', lbFiles.Items);
+  ConfigObj.WriteStrings('history/paths', lbPath.Items);
+  ConfigObj.WriteStrings('history/contents', lbContaining.Items);
+
 end;
 
 procedure TfMainForm.vtvResultsAddToSelection(Sender: TBaseVirtualTree; Node: PVirtualNode);

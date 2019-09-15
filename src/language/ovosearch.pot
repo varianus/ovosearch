@@ -41,8 +41,18 @@ msgctxt "tfmainform.grddetails.columns[1].title.caption"
 msgid "Title"
 msgstr ""
 
-#: tfmainform.lbcontaining.editlabel.caption
-msgctxt "tfmainform.lbcontaining.editlabel.caption"
+#: tfmainform.label1.caption
+msgctxt "tfmainform.label1.caption"
+msgid "Files"
+msgstr ""
+
+#: tfmainform.label2.caption
+msgctxt "tfmainform.label2.caption"
+msgid "Path"
+msgstr ""
+
+#: tfmainform.label3.caption
+msgctxt "tfmainform.label3.caption"
 msgid "Containing"
 msgstr ""
 
@@ -51,19 +61,9 @@ msgctxt "tfmainform.lbcontaining.text"
 msgid "tprocessutf8"
 msgstr ""
 
-#: tfmainform.lbfiles.editlabel.caption
-msgctxt "tfmainform.lbfiles.editlabel.caption"
-msgid "Files"
-msgstr ""
-
 #: tfmainform.lbfiles.text
 msgctxt "tfmainform.lbfiles.text"
 msgid "*.{pp,pas,inc}"
-msgstr ""
-
-#: tfmainform.lbpath.editlabel.caption
-msgctxt "tfmainform.lbpath.editlabel.caption"
-msgid "Path"
 msgstr ""
 
 #: tfmainform.lbpath.text
@@ -71,29 +71,8 @@ msgctxt "tfmainform.lbpath.text"
 msgid "c:\\ex-d\\lazarus"
 msgstr ""
 
-#: tfmainform.lvfiles.columns[0].caption
-msgctxt "tfmainform.lvfiles.columns[0].caption"
-msgid "Name"
-msgstr ""
-
-#: tfmainform.lvfiles.columns[1].caption
-msgctxt "tfmainform.lvfiles.columns[1].caption"
-msgid "Count"
-msgstr ""
-
-#: tfmainform.lvfiles.columns[2].caption
-msgctxt "tfmainform.lvfiles.columns[2].caption"
-msgid "Path"
-msgstr ""
-
-#: tfmainform.lvfiles.columns[3].caption
-msgctxt "tfmainform.lvfiles.columns[3].caption"
-msgid "Size"
-msgstr ""
-
-#: tfmainform.lvfiles.columns[4].caption
-msgctxt "tfmainform.lvfiles.columns[4].caption"
-msgid "Date"
+#: tfmainform.rbcasesensitive.caption
+msgid "Case sensitive"
 msgstr ""
 
 #: tfmainform.vtvresults.header.columns[0].text

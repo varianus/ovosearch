@@ -12,102 +12,144 @@ object fMainForm: TfMainForm
   Position = poScreenCenter
   object Splitter2: TSplitter
     Left = 528
-    Height = 393
-    Top = 112
+    Height = 386
+    Top = 123
     Width = 8
   end
   object Splitter1: TSplitter
     Cursor = crVSplit
     Left = 0
     Height = 8
-    Top = 104
+    Top = 115
     Width = 983
     Align = alTop
     ResizeAnchor = akTop
   end
   object Panel1: TPanel
     Left = 0
-    Height = 104
+    Height = 115
     Top = 0
     Width = 983
     Align = alTop
-    ClientHeight = 104
+    ClientHeight = 115
     ClientWidth = 983
     TabOrder = 2
-    object lbFiles: TLabeledEdit
-      Left = 115
-      Height = 23
-      Top = 8
-      Width = 656
-      EditLabel.Height = 15
-      EditLabel.Width = 23
-      EditLabel.Caption = 'Files'
-      EditLabel.ParentColor = False
-      LabelPosition = lpLeft
-      TabOrder = 0
-      Text = '*.{pp,pas,inc}'
-    end
-    object lbPath: TLabeledEdit
-      Left = 115
-      Height = 23
-      Top = 40
-      Width = 656
-      EditLabel.Height = 15
-      EditLabel.Width = 24
-      EditLabel.Caption = 'Path'
-      EditLabel.ParentColor = False
-      LabelPosition = lpLeft
-      TabOrder = 1
-      Text = 'c:\ex-d\lazarus'
-    end
-    object lbContaining: TLabeledEdit
-      Left = 115
-      Height = 23
-      Top = 72
-      Width = 656
-      EditLabel.Height = 15
-      EditLabel.Width = 59
-      EditLabel.Caption = 'Containing'
-      EditLabel.ParentColor = False
-      LabelPosition = lpLeft
-      TabOrder = 2
-      Text = 'tprocessutf8'
-    end
     object bSearch: TButton
-      Left = 900
+      Left = 904
       Height = 25
-      Top = 40
+      Top = 80
       Width = 72
       Anchors = [akRight, akBottom]
       Cancel = True
       Caption = 'Search'
       Default = True
       OnClick = bSearchClick
-      TabOrder = 3
+      TabOrder = 0
     end
     object bStop: TButton
-      Left = 900
+      Left = 904
       Height = 25
-      Top = 72
+      Top = 48
       Width = 72
       Anchors = [akRight, akBottom]
       Caption = 'Stop'
       OnClick = bStopClick
-      TabOrder = 4
+      TabOrder = 1
     end
     object rbCaseSensitive: TCheckBox
-      Left = 791
-      Height = 19
-      Top = 72
-      Width = 93
+      Left = 776
+      Height = 21
+      Top = 82
+      Width = 104
       Caption = 'Case sensitive'
+      TabOrder = 2
+    end
+    object lbFiles: TComboBox
+      AnchorSideLeft.Control = Label1
+      AnchorSideLeft.Side = asrBottom
+      Left = 111
+      Height = 29
+      Top = 8
+      Width = 656
+      Anchors = [akTop]
+      AutoComplete = True
+      AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
+      DropDownCount = 10
+      ItemHeight = 0
+      TabOrder = 3
+      Text = '*.{pp,pas,inc}'
+    end
+    object Label1: TLabel
+      AnchorSideRight.Control = lbFiles
+      Left = 80
+      Height = 17
+      Top = 16
+      Width = 25
+      Anchors = [akTop, akRight]
+      BorderSpacing.Around = 6
+      Caption = 'Files'
+      ParentColor = False
+    end
+    object lbPath: TComboBox
+      AnchorSideLeft.Control = Label2
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = lbFiles
+      AnchorSideTop.Side = asrBottom
+      Left = 111
+      Height = 29
+      Top = 43
+      Width = 656
+      Anchors = [akTop]
+      AutoComplete = True
+      AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
+      BorderSpacing.Around = 6
+      ItemHeight = 0
+      TabOrder = 4
+      Text = 'c:\ex-d\lazarus'
+    end
+    object lbContaining: TComboBox
+      AnchorSideLeft.Control = Label3
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = lbPath
+      AnchorSideTop.Side = asrBottom
+      Left = 112
+      Height = 29
+      Top = 78
+      Width = 656
+      Anchors = [akTop]
+      AutoComplete = True
+      AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
+      BorderSpacing.Around = 6
+      ItemHeight = 0
       TabOrder = 5
+      Text = 'tprocessutf8'
+    end
+    object Label2: TLabel
+      AnchorSideRight.Control = lbPath
+      Left = 80
+      Height = 17
+      Top = 48
+      Width = 25
+      Anchors = [akTop, akRight]
+      Caption = 'Path'
+      ParentColor = False
+    end
+    object Label3: TLabel
+      AnchorSideRight.Control = lbContaining
+      Left = 46
+      Height = 17
+      Top = 82
+      Width = 60
+      Anchors = [akTop, akRight]
+      BorderSpacing.Around = 6
+      Caption = 'Containing'
+      ParentColor = False
     end
   end
   object grdDetails: TDrawGrid
     Left = 536
-    Height = 393
-    Top = 112
+    Height = 386
+    Top = 123
     Width = 447
     Align = alClient
     ColCount = 2
@@ -132,8 +174,8 @@ object fMainForm: TfMainForm
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 23
-    Top = 505
+    Height = 19
+    Top = 509
     Width = 983
     Panels = <    
       item
@@ -148,9 +190,10 @@ object fMainForm: TfMainForm
     SimplePanel = False
   end
   object vtvResults: TLazVirtualStringTree
+    Cursor = 63
     Left = 0
-    Height = 393
-    Top = 112
+    Height = 386
+    Top = 123
     Width = 528
     Align = alLeft
     DefaultText = 'Node'
