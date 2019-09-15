@@ -57,7 +57,8 @@ type
     function Add(const S: string): Integer;
     Constructor Create;
     Destructor Destroy; override;
-    Procedure GetList(List: TStrings);
+    Procedure SetList(List: TStrings);
+
     Procedure LoadFromConfig(Config: TConfig; APath: string);
     Procedure WriteToConfig(Config: TConfig; APath: string);
     Property Max: Integer read FMax write SetMax;
@@ -197,7 +198,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TSimpleHistory.GetList(List: TStrings);
+procedure TSimpleHistory.SetList(List: TStrings);
 begin
   List.Assign(IntList);
 end;
@@ -266,7 +267,8 @@ begin
     end
   else
     begin
-      Node :=fConfigHolder.Add(APath, nkArray);
+      Node := fConfigHolder.find(APath, true);  // fConfigHolder.Add(APath, nkArray);
+      node.Kind:=nkArray;
       for i := 0 to Values.Count -1 do
         node.Add('',Values[i]);
 
