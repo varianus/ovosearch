@@ -225,8 +225,11 @@ end;
 
 procedure TfMainForm.bStopClick(Sender: TObject);
 begin
-  if pr.Process.Running then
-    pr.Terminate;
+  if assigned(pr) and pr.Process.Running then
+    begin
+     pr.Terminate;
+     StatusBar1.Panels[0].Text := 'Interrupted by user';
+    end;
 end;
 
 Procedure TfMainForm.RenderLine(aCanvas:TCanvas; aRect:TRect; Obj: TFoundLine);
@@ -258,7 +261,7 @@ begin
       aCanvas.Font.Color := clWindowText;
       aCanvas.brush.Color := clWindow;
       aCanvas.TextOut(x, aRect.Top, aText);
-      inc(x, aCanvas.GetTextWidth(atext));
+      //inc(x, aCanvas.GetTextWidth(atext));
     end;
 
 end;
