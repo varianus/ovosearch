@@ -286,8 +286,7 @@ begin
     begin
       for i := 0 to node.Count -1 do
        Values.Add(Node.Child(i).AsString);
-    end
-  else
+    end;
 
   Result := Values.Count;
 end;
