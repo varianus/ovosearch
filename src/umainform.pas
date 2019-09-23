@@ -6,13 +6,16 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
-  StdCtrls, Grids, searchresult, ProcessThread, JsonTools,
-  FilesFunctions, Config, Generics.Collections, Types, LazLoggerBase, laz.VirtualTrees;
+  StdCtrls, Grids, searchresult, ProcessThread, JsonTools, LCLType, Buttons,
+  FilesFunctions, Config, Generics.Collections, Types, LazLoggerBase, laz.VirtualTrees,
+  LCLIntf;
 
 type
 
   { TfMainForm }
   TSearchState = (ssFile, ssLine, ssNone);
+
+  { TComboBox }
 
   TfMainForm = class(TForm)
     bSearch: TButton;
@@ -25,30 +28,32 @@ type
     lbFiles: TComboBox;
     lbPath: TComboBox;
     rbCaseSensitive: TCheckBox;
+    SelectDirectory: TSelectDirectoryDialog;
+    bSelectPath: TSpeedButton;
     vtvResults: TLazVirtualStringTree;
     Panel1: TPanel;
     Splitter1: TSplitter;
     Splitter2: TSplitter;
     StatusBar1: TStatusBar;
     tmrParseResult: TTimer;
+
     procedure bSearchClick(Sender: TObject);
     procedure bStopClick(Sender: TObject);
     procedure grdDetailsDrawCell(Sender: TObject; aCol, aRow: Integer; aRect: TRect; aState: TGridDrawState);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure bSelectPathClick(Sender: TObject);
     procedure vtvResultsAddToSelection(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vtvResultsGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
       TextType: TVSTTextType; var CellText: String);
     procedure tmrParseResultStartTimer(Sender: TObject);
     procedure tmrParseResultStopTimer(Sender: TObject);
     procedure tmrParseResultTimer(Sender: TObject);
+    procedure vtvResultsNodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
   private
     FoundFiles: TFoundFiles;
     CurrObj : TFoundFile;
     pr: TProcessThread;
-    FilesHistory: TSimpleHistory;
-    PathsHistory: TSimpleHistory;
-    ContentsHistory: TSimpleHistory;
     RipGrepExecutable: String;
     MessageQueue: specialize TThreadQueue<string>;
     procedure GotMessage(Sender: TObject;
@@ -87,10 +92,8 @@ procedure TfMainForm.ParseMessages;
 var
   Line: TFoundLine;
   Node: TJsonNode;
-//  TreeNode : PVirtualNode;
   tmpNode: TJsonNode;
   Message: string;
-//  Item:TListItem;
   i, J: integer;
 
 begin
@@ -105,7 +108,6 @@ begin
           CurrObj.FileName:=Node.Find('data/path/text').AsString;
           FoundFiles.Add(CurrObj);
           CurrObj.FileInfo := GetFileInfo(CurrObj.fileName);
-          //TreeNode :=
           vtvResults.AddChild(nil);
         end;
       if Node.Find('type').Value = '"match"'   then
@@ -122,7 +124,6 @@ begin
               Line.SubMatches[i].Start := trunc(tmpnode.find('start').AsInteger);
               Line.SubMatches[i]._End := trunc(tmpnode.find('end').AsInteger);
             end;
-
         end;
       if Node.Find('type').Value = '"end"'   then
         begin
@@ -142,7 +143,6 @@ procedure TfMainForm.StopTimer(Sender: TObject);
 begin
   tmrParseResult.Enabled := false;
 end;
-
 
 function ReplaceLineEndings(const s:string; NewLineEnds: AnsiChar): string;
 var
@@ -174,8 +174,6 @@ begin
     end;
   SetLength(Result, R-1);
 end;
-
-
 
 procedure TfMainForm.bSearchClick(Sender: TObject);
 var
@@ -212,9 +210,10 @@ begin
   pr.Process.Parameters.add('-e');  pr.Process.Parameters.add(lbContaining.Text);
   pr.Process.Parameters.add('-g');  pr.Process.Parameters.add(lbFiles.Text);
   pr.Process.Parameters.add(lbPath.Text);
-  debugLn(pr.Process.Executable + ' '+ ReplaceLineEndings(pr.Process.Parameters.text, ' '));
-  pr.OnTerminate := @StopTimer;
 
+  debugLn(pr.Process.Executable + ' '+ ReplaceLineEndings(pr.Process.Parameters.text, ' '));
+
+  pr.OnTerminate := @StopTimer;
   pr.OnMessageLine:=@GotMessage;
   tmrParseResult.Enabled := true;
   pr.Start;
@@ -272,8 +271,11 @@ var
   Match: TFoundLine;
   ts: TTextStyle;
 begin
-  if not Assigned(CurrObj) then exit;
-  if aRow >= CurrObj.FoundLines.Count then exit;
+  if not Assigned(CurrObj) then
+    exit;
+
+  if aRow >= CurrObj.FoundLines.Count then
+    exit;
 
   Match := CurrObj.FoundLines[aRow];
   grdDetails.Canvas.FillRect(arect);
@@ -294,9 +296,6 @@ begin
           RenderLine(grdDetails.Canvas, Arect, Match);
         end;
   end;
-
-
-
 end;
 
 procedure TfMainForm.FormCreate(Sender: TObject);
@@ -308,10 +307,12 @@ begin
 
   ConfigObj.ReadStrings('history/files', lbFiles.Items);
   lbFiles.ItemIndex:=0;
+
   ConfigObj.ReadStrings('history/paths', lbPath.Items);
   lbPath.ItemIndex:=0;
+
   ConfigObj.ReadStrings('history/contents', lbContaining.Items);
-  lbContaining.ItemIndex:=0;
+  lbContaining.ItemIndex:=-1;
 
 end;
 
@@ -327,6 +328,13 @@ begin
   ConfigObj.WriteStrings('history/paths', lbPath.Items);
   ConfigObj.WriteStrings('history/contents', lbContaining.Items);
 
+end;
+
+procedure TfMainForm.bSelectPathClick(Sender: TObject);
+begin
+  SelectDirectory.FileName := lbPath.Text;
+  if SelectDirectory.Execute then
+    lbPath.Text := SelectDirectory.FileName;
 end;
 
 procedure TfMainForm.vtvResultsAddToSelection(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -350,7 +358,6 @@ begin
     2: CellText:=(ExtractFilePath(Data.FileName));
     3: CellText:=(strByteSize(Data.FileInfo.Size));
     4: CellText:=(DateTimeToStr(Data.FileInfo.ModifyDate));
-
   end;
 
 end;
@@ -374,6 +381,14 @@ begin
   ParseMessages;
   tmrParseResult.Enabled := true;
 
+end;
+
+procedure TfMainForm.vtvResultsNodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
+var
+ Data: TFoundFile;
+begin
+  Data := FoundFiles[HitInfo.HitNode^.Index];
+  OpenDocument(Data.FileName);
 
 end;
 
