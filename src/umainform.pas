@@ -20,16 +20,30 @@ type
   TfMainForm = class(TForm)
     bSearch: TButton;
     bStop: TButton;
+    cbFileNames: TComboBox;
+    cbContent: TComboBox;
+    cbHidden: TCheckBox;
+    cbBinary: TCheckBox;
     grdDetails: TDrawGrid;
+    GroupBox1: TGroupBox;
+    GroupBox2: TGroupBox;
+    GroupBox3: TGroupBox;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     lbContaining: TComboBox;
     lbFiles: TComboBox;
     lbPath: TComboBox;
+    memoLog: TMemo;
+    PageControl1: TPageControl;
+    pcDetails: TPageControl;
     rbCaseSensitive: TCheckBox;
     SelectDirectory: TSelectDirectoryDialog;
     bSelectPath: TSpeedButton;
+    tsSearch: TTabSheet;
+    tsAdvanced: TTabSheet;
+    tsDetails: TTabSheet;
+    tsLog: TTabSheet;
     vtvResults: TLazVirtualStringTree;
     Panel1: TPanel;
     Splitter1: TSplitter;
@@ -59,6 +73,7 @@ type
     procedure GotMessage(Sender: TObject;
       const MessageKind: TMessageLineKind; const Message: string);
     procedure ParseMessages;
+    procedure ProcessFileNames;
     Procedure RenderLine(aCanvas:TCanvas; aRect:TRect; Obj: TFoundLine);
     procedure StopTimer(Sender: TObject);
     procedure UpdateForm;
@@ -83,8 +98,13 @@ end;
 procedure TfMainForm.GotMessage(Sender: TObject;
   const MessageKind: TMessageLineKind; const Message: string);
 begin
-  if (MessageKind <> ieinfo) or (message = '') then
+  if (message = '') then
     exit;
+  if (MessageKind <> ieinfo) then
+    begin
+      memoLog.Lines.Add(Message);
+      exit;
+    end;
   MessageQueue.Enqueue(Message);
 end;
 
@@ -175,15 +195,39 @@ begin
   SetLength(Result, R-1);
 end;
 
-procedure TfMainForm.bSearchClick(Sender: TObject);
+Procedure TfMainForm.ProcessFileNames;
 var
- s:string;
+  List: TStringList;
+  i: integer;
+begin
+  if cbFileNames.ItemIndex = 1 then
+    begin
+      pr.Process.Parameters.add('-g');  pr.Process.Parameters.add(lbFiles.Text);
+    end
+  else
+  if cbFileNames.ItemIndex = 0 then
+    begin
+      List := TStringList.Create;
+      List.StrictDelimiter := true;
+      List.Delimiter := ';';
+      List.DelimitedText := lbFiles.Text;
+      for i := 0 to list.Count -1 do
+        begin
+          pr.Process.Parameters.add('-g');  pr.Process.Parameters.add(List[i]);
+        end;
+      List.free;
+    end;
+
+end;
+
+procedure TfMainForm.bSearchClick(Sender: TObject);
 begin
   lbFiles.AddHistoryItem(lbFiles.Text, 10, true,true);
   lbPath.AddHistoryItem(lbPath.Text,10, true,true);
   lbContaining.AddHistoryItem(lbContaining.Text,10, true,true);
 
   vtvResults.Clear;
+  memoLog.Clear;
   FoundFiles.Clear;
 
   pr := TProcessThread.Create;
@@ -207,8 +251,23 @@ begin
 
   pr.Process.Parameters.add('--json');
 
+  if cbContent.ItemIndex = 0 then
+    pr.Process.Parameters.add('-F'); // search as literal string
+
+  if cbHidden.Checked then
+    pr.Process.Parameters.add('--hidden');
+
+  if cbBinary.Checked then
+    begin
+      pr.Process.Parameters.add('--text');
+      pr.Process.Parameters.add('--null-data');
+    end;
+
+//  pr.Process.Parameters.add('--no-ignore');   pr.Process.Parameters.add('--no-ignore-global');
+
+  ProcessFileNames;
+
   pr.Process.Parameters.add('-e');  pr.Process.Parameters.add(lbContaining.Text);
-  pr.Process.Parameters.add('-g');  pr.Process.Parameters.add(lbFiles.Text);
   pr.Process.Parameters.add(lbPath.Text);
 
   debugLn(pr.Process.Executable + ' '+ ReplaceLineEndings(pr.Process.Parameters.text, ' '));
@@ -314,6 +373,10 @@ begin
   ConfigObj.ReadStrings('history/contents', lbContaining.Items);
   lbContaining.ItemIndex:=-1;
 
+  cbFileNames.ItemIndex:= ConfigObj.ReadInteger('search/filenames', {$IFDEF windows}0{$ELSE}1{$ENDIF});
+  cbHidden.Checked := ConfigObj.ReadBoolean('search/hidden', False);
+  cbBinary.Checked := ConfigObj.ReadBoolean('search/binary', False);
+
 end;
 
 procedure TfMainForm.FormDestroy(Sender: TObject);
@@ -328,6 +391,9 @@ begin
   ConfigObj.WriteStrings('history/paths', lbPath.Items);
   ConfigObj.WriteStrings('history/contents', lbContaining.Items);
 
+  ConfigObj.WriteInteger('search/filenames', cbFileNames.ItemIndex);
+  ConfigObj.writeBoolean('search/hidden', cbHidden.Checked);
+  ConfigObj.writeBoolean('search/binary', cbBinary.Checked);
 end;
 
 procedure TfMainForm.bSelectPathClick(Sender: TObject);

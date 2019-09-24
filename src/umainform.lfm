@@ -1,190 +1,35 @@
 object fMainForm: TfMainForm
   Left = 1520
-  Height = 506
+  Height = 604
   Top = 33
-  Width = 890
+  Width = 1015
   Caption = 'OvoSearch'
-  ClientHeight = 506
-  ClientWidth = 890
+  ClientHeight = 604
+  ClientWidth = 1015
   Font.Height = -12
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
   object Splitter2: TSplitter
     Left = 512
-    Height = 360
-    Top = 123
+    Height = 397
+    Top = 184
     Width = 8
   end
   object Splitter1: TSplitter
     Cursor = crVSplit
     Left = 0
     Height = 8
-    Top = 0
-    Width = 890
+    Top = 176
+    Width = 1015
     Align = alTop
     ResizeAnchor = akTop
-  end
-  object Panel1: TPanel
-    Left = 0
-    Height = 115
-    Top = 8
-    Width = 890
-    Align = alTop
-    ClientHeight = 115
-    ClientWidth = 890
-    TabOrder = 2
-    object bSearch: TButton
-      Left = 811
-      Height = 25
-      Top = 80
-      Width = 72
-      Anchors = [akRight, akBottom]
-      Cancel = True
-      Caption = 'Search'
-      Default = True
-      OnClick = bSearchClick
-      TabOrder = 0
-    end
-    object bStop: TButton
-      Left = 811
-      Height = 25
-      Top = 48
-      Width = 72
-      Anchors = [akRight, akBottom]
-      Caption = 'Stop'
-      OnClick = bStopClick
-      TabOrder = 1
-    end
-    object rbCaseSensitive: TCheckBox
-      AnchorSideLeft.Control = lbContaining
-      AnchorSideLeft.Side = asrBottom
-      Left = 655
-      Height = 19
-      Top = 66
-      Width = 93
-      Anchors = [akLeft]
-      BorderSpacing.Around = 6
-      Caption = 'Case sensitive'
-      TabOrder = 2
-    end
-    object lbFiles: TComboBox
-      Left = 87
-      Height = 23
-      Top = 8
-      Width = 562
-      Anchors = [akTop, akLeft, akRight]
-      AutoComplete = True
-      AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
-      DropDownCount = 10
-      ItemHeight = 15
-      TabOrder = 3
-      Text = '*.{pp,pas,inc}'
-    end
-    object Label1: TLabel
-      AnchorSideTop.Control = lbFiles
-      AnchorSideTop.Side = asrCenter
-      Left = 54
-      Height = 15
-      Top = 12
-      Width = 23
-      BorderSpacing.Around = 6
-      Caption = 'Files'
-      ParentColor = False
-    end
-    object lbPath: TComboBox
-      Left = 87
-      Height = 23
-      Top = 37
-      Width = 561
-      Anchors = [akTop, akLeft, akRight]
-      AutoSelect = False
-      BorderSpacing.Around = 6
-      DropDownCount = 10
-      ItemHeight = 15
-      TabOrder = 4
-      Text = 'c:\ex-d\lazarus'
-    end
-    object lbContaining: TComboBox
-      Left = 87
-      Height = 23
-      Top = 66
-      Width = 562
-      Anchors = [akTop, akLeft, akRight]
-      AutoComplete = True
-      AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
-      AutoSize = False
-      BorderSpacing.Around = 6
-      ItemHeight = 15
-      TabOrder = 5
-      Text = 'tprocessutf8'
-    end
-    object Label2: TLabel
-      AnchorSideTop.Control = lbPath
-      AnchorSideTop.Side = asrCenter
-      Left = 53
-      Height = 15
-      Top = 41
-      Width = 24
-      BorderSpacing.Around = 6
-      Caption = 'Path'
-      ParentColor = False
-    end
-    object Label3: TLabel
-      AnchorSideTop.Control = lbContaining
-      AnchorSideTop.Side = asrCenter
-      Left = 19
-      Height = 15
-      Top = 70
-      Width = 59
-      BorderSpacing.Around = 6
-      Caption = 'Containing'
-      ParentColor = False
-    end
-    object bSelectPath: TSpeedButton
-      AnchorSideLeft.Control = lbPath
-      AnchorSideLeft.Side = asrBottom
-      Left = 654
-      Height = 22
-      Top = 38
-      Width = 23
-      Anchors = [akLeft]
-      BorderSpacing.Around = 6
-      Caption = '...'
-      OnClick = bSelectPathClick
-    end
-  end
-  object grdDetails: TDrawGrid
-    Left = 520
-    Height = 360
-    Top = 123
-    Width = 370
-    Align = alClient
-    ColCount = 2
-    Columns = <    
-      item
-        Alignment = taRightJustify
-        ReadOnly = True
-        Title.Caption = 'Title'
-      end    
-      item
-        ReadOnly = True
-        Title.Caption = 'Title'
-        Width = 564
-      end>
-    ExtendedSelect = False
-    FixedCols = 0
-    FixedRows = 0
-    Options = [goRangeSelect, goSmoothScroll]
-    TabOrder = 3
-    TitleFont.Height = -12
-    OnDrawCell = grdDetailsDrawCell
   end
   object StatusBar1: TStatusBar
     Left = 0
     Height = 23
-    Top = 483
-    Width = 890
+    Top = 581
+    Width = 1015
     Panels = <    
       item
         Width = 150
@@ -200,8 +45,8 @@ object fMainForm: TfMainForm
   object vtvResults: TLazVirtualStringTree
     Cursor = 63
     Left = 0
-    Height = 360
-    Top = 123
+    Height = 397
+    Top = 184
     Width = 512
     Align = alLeft
     DefaultText = 'Node'
@@ -233,7 +78,7 @@ object fMainForm: TfMainForm
         Width = 100
       end>
     Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoShowSortGlyphs, hoVisible]
-    TabOrder = 5
+    TabOrder = 3
     TreeOptions.AutoOptions = [toAutoDropExpand, toAutoScrollOnExpand, toAutoSort, toAutoSpanColumns, toAutoTristateTracking, toAutoDeleteMovedNodes, toAutoChangeScale]
     TreeOptions.MiscOptions = [toFullRepaintOnResize, toGridExtensions, toInitOnSave, toReportMode, toToggleOnDblClick, toWheelPanning]
     TreeOptions.PaintOptions = [toShowVertGridLines, toThemeAware, toUseBlendedImages, toHideTreeLinesIfThemed]
@@ -242,6 +87,288 @@ object fMainForm: TfMainForm
     OnAddToSelection = vtvResultsAddToSelection
     OnGetText = vtvResultsGetText
     OnNodeDblClick = vtvResultsNodeDblClick
+  end
+  object pcDetails: TPageControl
+    Left = 520
+    Height = 397
+    Top = 184
+    Width = 495
+    ActivePage = tsDetails
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 4
+    object tsDetails: TTabSheet
+      Caption = 'Details'
+      ClientHeight = 369
+      ClientWidth = 487
+      object grdDetails: TDrawGrid
+        Left = 0
+        Height = 369
+        Top = 0
+        Width = 487
+        Align = alClient
+        ColCount = 2
+        Columns = <        
+          item
+            Alignment = taRightJustify
+            ReadOnly = True
+            Title.Caption = 'Title'
+          end        
+          item
+            ReadOnly = True
+            Title.Caption = 'Title'
+            Width = 564
+          end>
+        ExtendedSelect = False
+        FixedCols = 0
+        FixedRows = 0
+        Options = [goRangeSelect, goSmoothScroll]
+        TabOrder = 0
+        TitleFont.Height = -12
+        OnDrawCell = grdDetailsDrawCell
+      end
+    end
+    object tsLog: TTabSheet
+      Caption = 'Log'
+      ClientHeight = 369
+      ClientWidth = 487
+      object memoLog: TMemo
+        Left = 0
+        Height = 369
+        Top = 0
+        Width = 487
+        Align = alClient
+        ReadOnly = True
+        TabOrder = 0
+      end
+    end
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 176
+    Top = 0
+    Width = 1015
+    ActivePage = tsSearch
+    Align = alTop
+    TabIndex = 0
+    TabOrder = 5
+    object tsSearch: TTabSheet
+      Caption = 'Search'
+      ClientHeight = 148
+      ClientWidth = 1007
+      object Panel1: TPanel
+        Left = 0
+        Height = 148
+        Top = 0
+        Width = 1007
+        Align = alClient
+        ClientHeight = 148
+        ClientWidth = 1007
+        TabOrder = 0
+        object bSearch: TButton
+          Left = 928
+          Height = 25
+          Top = 113
+          Width = 72
+          Anchors = [akRight, akBottom]
+          Cancel = True
+          Caption = 'Search'
+          Default = True
+          OnClick = bSearchClick
+          TabOrder = 0
+        end
+        object bStop: TButton
+          Left = 928
+          Height = 25
+          Top = 81
+          Width = 72
+          Anchors = [akRight, akBottom]
+          Caption = 'Stop'
+          OnClick = bStopClick
+          TabOrder = 1
+        end
+        object rbCaseSensitive: TCheckBox
+          AnchorSideLeft.Control = lbContaining
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = lbContaining
+          AnchorSideTop.Side = asrCenter
+          Left = 772
+          Height = 19
+          Top = 68
+          Width = 93
+          BorderSpacing.Around = 6
+          Caption = 'Case sensitive'
+          TabOrder = 2
+        end
+        object lbFiles: TComboBox
+          Left = 87
+          Height = 23
+          Top = 8
+          Width = 679
+          Anchors = [akTop, akLeft, akRight]
+          AutoComplete = True
+          AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
+          DropDownCount = 10
+          ItemHeight = 15
+          TabOrder = 3
+          Text = '*.{pp,pas,inc}'
+        end
+        object Label1: TLabel
+          AnchorSideTop.Control = lbFiles
+          AnchorSideTop.Side = asrCenter
+          Left = 54
+          Height = 15
+          Top = 12
+          Width = 23
+          BorderSpacing.Around = 6
+          Caption = 'Files'
+          ParentColor = False
+        end
+        object lbPath: TComboBox
+          Left = 87
+          Height = 23
+          Top = 37
+          Width = 678
+          Anchors = [akTop, akLeft, akRight]
+          AutoSelect = False
+          BorderSpacing.Around = 6
+          DropDownCount = 10
+          ItemHeight = 15
+          TabOrder = 4
+          Text = 'c:\ex-d\lazarus'
+        end
+        object lbContaining: TComboBox
+          Left = 87
+          Height = 23
+          Top = 66
+          Width = 679
+          Anchors = [akTop, akLeft, akRight]
+          AutoComplete = True
+          AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
+          AutoSize = False
+          BorderSpacing.Around = 6
+          ItemHeight = 15
+          TabOrder = 5
+          Text = 'tprocessutf8'
+        end
+        object Label2: TLabel
+          AnchorSideTop.Control = lbPath
+          AnchorSideTop.Side = asrCenter
+          Left = 53
+          Height = 15
+          Top = 41
+          Width = 24
+          BorderSpacing.Around = 6
+          Caption = 'Path'
+          ParentColor = False
+        end
+        object Label3: TLabel
+          AnchorSideTop.Control = lbContaining
+          AnchorSideTop.Side = asrCenter
+          Left = 19
+          Height = 15
+          Top = 70
+          Width = 59
+          BorderSpacing.Around = 6
+          Caption = 'Containing'
+          ParentColor = False
+        end
+        object bSelectPath: TSpeedButton
+          AnchorSideLeft.Control = lbPath
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = lbPath
+          AnchorSideTop.Side = asrCenter
+          Left = 771
+          Height = 22
+          Top = 37
+          Width = 23
+          BorderSpacing.Around = 6
+          Caption = '...'
+          OnClick = bSelectPathClick
+        end
+      end
+    end
+    object tsAdvanced: TTabSheet
+      Caption = 'Advanced'
+      ClientHeight = 148
+      ClientWidth = 1007
+      object GroupBox1: TGroupBox
+        Left = 8
+        Height = 105
+        Top = 8
+        Width = 160
+        Caption = 'File names'
+        ClientHeight = 85
+        ClientWidth = 156
+        TabOrder = 0
+        object cbFileNames: TComboBox
+          Left = 8
+          Height = 23
+          Top = 12
+          Width = 140
+          ItemHeight = 15
+          ItemIndex = 0
+          Items.Strings = (
+            'Dos expression'
+            'Glob'
+          )
+          Style = csDropDownList
+          TabOrder = 0
+          Text = 'Dos expression'
+        end
+      end
+      object GroupBox2: TGroupBox
+        Left = 176
+        Height = 105
+        Top = 8
+        Width = 160
+        Caption = 'Content'
+        ClientHeight = 85
+        ClientWidth = 156
+        TabOrder = 1
+        object cbContent: TComboBox
+          Left = 8
+          Height = 23
+          Top = 12
+          Width = 140
+          ItemHeight = 15
+          ItemIndex = 0
+          Items.Strings = (
+            'Literal string'
+            'Regular expression'
+          )
+          Style = csDropDownList
+          TabOrder = 0
+          Text = 'Literal string'
+        end
+      end
+      object GroupBox3: TGroupBox
+        Left = 344
+        Height = 105
+        Top = 8
+        Width = 160
+        Caption = 'Include in search'
+        ClientHeight = 85
+        ClientWidth = 156
+        TabOrder = 2
+        object cbHidden: TCheckBox
+          Left = 16
+          Height = 19
+          Top = 8
+          Width = 78
+          Caption = 'Hidden file'
+          TabOrder = 0
+        end
+        object cbBinary: TCheckBox
+          Left = 16
+          Height = 19
+          Top = 32
+          Width = 53
+          Caption = 'Binary'
+          TabOrder = 1
+        end
+      end
+    end
   end
   object tmrParseResult: TTimer
     Enabled = False
