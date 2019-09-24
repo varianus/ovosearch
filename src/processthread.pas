@@ -49,7 +49,12 @@ begin
   for n := 0 to fLines.Count - 1 do
     begin
       if Assigned(FOnMessageLine)   then
-         FOnMessageLine(Self, ieInfo, Flines[n]);
+        begin
+          if Assigned(fLines.Objects[n]) then
+            FOnMessageLine(Self, ieError, Flines[n])
+          else
+            FOnMessageLine(Self, ieInfo, Flines[n]);
+        end;
     end;
 
   if Assigned(FOnMessageList) then
@@ -123,7 +128,7 @@ begin
 
   while (not Terminated) do // and (FProcess.Running)  do
     begin
-      HasOutput := ReadInputPipe(FProcess.Output,OutputLine,false);
+      HasOutput := ReadInputPipe(FProcess.Output,OutputLine,false) or ReadInputPipe(FProcess.Stderr,StdErrLine,True);
       SendResults;
       if (not HasOutput) then
         if not FProcess.Running then
@@ -134,6 +139,8 @@ begin
 
   if (OutputLine<>'') then
     fLines.Add(OutputLine);
+  if (StdErrLine<>'') then
+    fLines.AddObject(OutputLine, self);
 
   SendResults;
 
@@ -147,7 +154,7 @@ constructor TProcessThread.Create;
 begin
   inherited Create(true);
   fProcess := TProcess.Create(Nil);
-  FProcess.Options:= [poUsePipes{$IFDEF Windows},poStderrToOutPut{$ENDIF}];
+  FProcess.Options:= [poUsePipes{,poStderrToOutPut}];
   FProcess.ShowWindow := swoHide;
 
 end;
