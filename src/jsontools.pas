@@ -1298,7 +1298,7 @@ end;
 function UnicodeToString(C: LongWord): string;
 begin
   if C = 0 then
-    Result := ''
+    Result := chr(C)
   else if C < $80 then
     Result := Chr(C)
   else if C < $800 then
@@ -1317,7 +1317,7 @@ end;
 function UnicodeToSize(C: LongWord): Integer;
 begin
   if C = 0 then
-    Result := 0
+    Result := 1
   else if C < $80 then
     Result := 1
   else if C < $800 then
