@@ -24,7 +24,7 @@ unit FilesFunctions;
 
 interface
 
-uses Classes, Generics.Collections;
+uses Classes, LCLProc, Generics.Collections, StrUtils;
 
 type
   TFileInfo = record
@@ -49,6 +49,7 @@ function GetConfigDir: string;
 function strByteSize(Value: int64): string;
 function EncodeSafeFileName(const s: string): string;
 function DecodeSafeFileName(const s: string): string;
+function StrippedOfNonAscii(const s: string): string;
 
 implementation
 
@@ -304,6 +305,26 @@ begin
   end;
 end;
 
+function StrippedOfNonAscii(const s: string): string;
+var
+  i, Count: Integer;
+begin
+  SetLength(Result, Length(s));
+  Count := 0;
+  for i := 1 to Length(s) do begin
+    inc(Count);
+    if ((s[i] >= #32) and (s[i] <= #127)) then // or (s[i] in [#10, #13]) then
+      begin
+        Result[Count] := s[i];
+      end
+    else
+      begin
+        Result[Count] := '?';
+      end;
+  end;
+  SetLength(Result, Count);
+end;
+
 function GetFileInfo(FileName: string): TFileInfo;
 var
   sr: TSearchRec;
@@ -323,7 +344,14 @@ var
   Directory: string;
 begin
   Assert(List <> nil);
+  List.Clear;
   {* extract the Directory *}
+  if DirectoryExistsUTF8(Path) and not (copy(Path, Length(Path), 1) = PathDelim) then
+    begin
+      Result := False;
+      exit;
+    end;
+
   Directory := ExtractFileDir(Path);
 
   {* files can be searched in the current directory *}
@@ -339,7 +367,8 @@ begin
     begin
       if (SearchRec.Name <> '.') and
         (SearchRec.Name <> '..') and
-        ((SearchRec.Attr and faDirectory) = faDirectory) then
+        ((SearchRec.Attr and faDirectory) = faDirectory) and
+        AnsiStartsText(Path, Directory + SearchRec.Name) then
         List.Add(Directory + SearchRec.Name);
 
       case FindNextUTF8(SearchRec) of
@@ -352,6 +381,7 @@ begin
     end;
   finally
     FindCloseUTF8(SearchRec);
+    Result := List.Count > 0;
     List.EndUpdate;
   end;
 end;

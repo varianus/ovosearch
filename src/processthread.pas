@@ -95,7 +95,6 @@ var
     if Count=0 then exit;
     Count:=aStream.Read(Buf[1],Min(length(Buf),Count));
     if Count=0 then exit;
-    debugln(buf);
     Result:=true;
     StartPos:=1;
     i:=1;
@@ -104,6 +103,7 @@ var
         if Buf[i] in [#10,#13] then
           begin
             LineBuf:=LineBuf+copy(Buf,StartPos,i-StartPos);
+            debugln(linebuf);
             if IsStdErr then
               fLines.AddObject(LineBuf,fLines)
             else

@@ -7,8 +7,8 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
   StdCtrls, Grids, searchresult, ProcessThread, JsonTools, LCLType, Buttons,
-  FilesFunctions, Config, Generics.Collections, Types, LazLoggerBase, laz.VirtualTrees,
-  LCLIntf;
+  FilesFunctions, Config, Generics.Collections, base64, Types, LazLoggerBase, laz.VirtualTrees,
+  LCLIntf,LazUTF8;
 
 type
 
@@ -125,15 +125,38 @@ begin
       if Node.Find('type').Value = '"begin"'   then
         begin
           CurrObj := TFoundFile.Create;
-          CurrObj.FileName:=Node.Find('data/path/text').AsString;
+          tmpNode := Node.Find('data/path/text');
+          if Assigned(tmpNode) then
+             CurrObj.FileName:=tmpNode.AsString
+          else
+            begin
+              tmpNode := Node.Find('data/path/bytes');
+              if Assigned(tmpNode) then
+                begin
+                 CurrObj.FileName:= StrippedOfNonAscii(DecodeStringBase64(tmpNode.AsString));
+                end;
+            end;
           FoundFiles.Add(CurrObj);
           CurrObj.FileInfo := GetFileInfo(CurrObj.fileName);
           vtvResults.AddChild(nil);
         end;
+
       if Node.Find('type').Value = '"match"'   then
         begin
           Line := TFoundLine.Create;
-          line.Line:= node.find('data/lines/text').AsString;
+          tmpnode := node.find('data/lines/text');
+          if Assigned(tmpNode) then
+             line.Line:=tmpNode.AsString
+          else
+            begin
+              tmpNode := Node.Find('data/lines/bytes');
+              if Assigned(tmpNode) then
+                begin
+                 line.Line:=StrippedOfNonAscii(DecodeStringBase64(tmpNode.AsString));
+                end;
+
+            end;
+
           line.Row:= trunc(node.Find('data/line_number').AsNumber);
           CurrObj.FoundLines.Add(line);
           j := Node.Find('data/submatches').Count;
@@ -229,6 +252,7 @@ begin
   vtvResults.Clear;
   memoLog.Clear;
   FoundFiles.Clear;
+  MessageQueue.Clear;
 
   pr := TProcessThread.Create;
   pr.FreeOnTerminate:=true;
@@ -260,7 +284,7 @@ begin
   if cbBinary.Checked then
     begin
       pr.Process.Parameters.add('--text');
-      pr.Process.Parameters.add('--null-data');
+    //  pr.Process.Parameters.add('--null-data');
     end;
 
 //  pr.Process.Parameters.add('--no-ignore');   pr.Process.Parameters.add('--no-ignore-global');
@@ -407,7 +431,7 @@ procedure TfMainForm.vtvResultsAddToSelection(Sender: TBaseVirtualTree; Node: PV
 begin
   if not assigned(Node) then exit;
   CurrObj := FoundFiles[Node^.Index]; // TFoundFile(PNodeData(vtvResults.GetNodeData(Node))^.Data);
-
+  DebugLn('>>'+CurrObj.FoundLines[0].Line+'<<');
   grdDetails.RowCount:=CurrObj.FoundLines.Count;
   grdDetails.invalidate;
 end;
