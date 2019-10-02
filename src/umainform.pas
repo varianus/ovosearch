@@ -63,6 +63,8 @@ type
     procedure tmrParseResultStartTimer(Sender: TObject);
     procedure tmrParseResultStopTimer(Sender: TObject);
     procedure tmrParseResultTimer(Sender: TObject);
+    procedure vtvResultsHeaderClick(Sender: TVTHeader; HitInfo: TVTHeaderHitInfo
+      );
     procedure vtvResultsNodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
   private
     FoundFiles: TFoundFiles;
@@ -127,17 +129,17 @@ begin
           CurrObj := TFoundFile.Create;
           tmpNode := Node.Find('data/path/text');
           if Assigned(tmpNode) then
-             CurrObj.FileName:=tmpNode.AsString
+            CurrObj.FullName:= tmpNode.AsString
           else
             begin
               tmpNode := Node.Find('data/path/bytes');
               if Assigned(tmpNode) then
                 begin
-                 CurrObj.FileName:= StrippedOfNonAscii(DecodeStringBase64(tmpNode.AsString));
+                 CurrObj.FullName:= StrippedOfNonAscii(DecodeStringBase64(tmpNode.AsString));
                 end;
             end;
           FoundFiles.Add(CurrObj);
-          CurrObj.FileInfo := GetFileInfo(CurrObj.fileName);
+          CurrObj.FileInfo := GetFileInfo(CurrObj.FullName);
           vtvResults.AddChild(nil);
         end;
 
@@ -443,11 +445,11 @@ var
 begin
   Data := FoundFiles[Node^.Index]; // TFoundFile(PNodeData(vtvResults.GetNodeData(Node))^.Data);
   case column of
-    0: CellText:=ExtractFileName(data.FileName);
-    1: CellText:=(IntToStr(data.Matches));
-    2: CellText:=(ExtractFilePath(Data.FileName));
-    3: CellText:=(strByteSize(Data.FileInfo.Size));
-    4: CellText:=(DateTimeToStr(Data.FileInfo.ModifyDate));
+    0: CellText := data.FileName;
+    1: CellText := (IntToStr(data.Matches));
+    2: CellText := Data.Path;
+    3: CellText := (strByteSize(Data.FileInfo.Size));
+    4: CellText := (DateTimeToStr(Data.FileInfo.ModifyDate));
   end;
 
 end;
@@ -473,12 +475,24 @@ begin
 
 end;
 
+procedure TfMainForm.vtvResultsHeaderClick(Sender: TVTHeader;
+  HitInfo: TVTHeaderHitInfo);
+begin
+  if TResultField(HitInfo.Column) <> FoundFiles.SortColumn then
+    Sender.SortDirection:=sdDescending;
+
+  Sender.SortDirection:= TSortDirection(abs(ord(Sender.SortDirection)-1));
+  FoundFiles.SortbyColumn(TResultField(HitInfo.Column), searchresult.TSortDirection(Sender.SortDirection));
+  Sender.SortColumn:=HitInfo.Column;
+
+end;
+
 procedure TfMainForm.vtvResultsNodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
 var
  Data: TFoundFile;
 begin
   Data := FoundFiles[HitInfo.HitNode^.Index];
-  OpenDocument(Data.FileName);
+  OpenDocument(Data.FullName);
 
 end;
 
