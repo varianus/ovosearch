@@ -24,6 +24,7 @@ type
     cbContent: TComboBox;
     cbHidden: TCheckBox;
     cbBinary: TCheckBox;
+    cbRecursive: TCheckBox;
     grdDetails: TDrawGrid;
     GroupBox1: TGroupBox;
     GroupBox2: TGroupBox;
@@ -37,7 +38,8 @@ type
     memoLog: TMemo;
     PageControl1: TPageControl;
     pcDetails: TPageControl;
-    rbCaseSensitive: TCheckBox;
+    rbCaseSensitiveText: TSpeedButton;
+    rbCaseSensitiveFile: TSpeedButton;
     SelectDirectory: TSelectDirectoryDialog;
     bSelectPath: TSpeedButton;
     tsSearch: TTabSheet;
@@ -224,10 +226,16 @@ Procedure TfMainForm.ProcessFileNames;
 var
   List: TStringList;
   i: integer;
+  Glob : string;
 begin
+  if rbCaseSensitiveFile.Down then
+    Glob := '--glob'
+  else
+    Glob := '--iglob';
+
   if cbFileNames.ItemIndex = 1 then
     begin
-      pr.Process.Parameters.add('-g');  pr.Process.Parameters.add(lbFiles.Text);
+      pr.Process.Parameters.add(Glob);  pr.Process.Parameters.add(lbFiles.Text);
     end
   else
   if cbFileNames.ItemIndex = 0 then
@@ -238,7 +246,7 @@ begin
       List.DelimitedText := lbFiles.Text;
       for i := 0 to list.Count -1 do
         begin
-          pr.Process.Parameters.add('-g');  pr.Process.Parameters.add(List[i]);
+          pr.Process.Parameters.add(Glob);  pr.Process.Parameters.add(List[i]);
         end;
       List.free;
     end;
@@ -259,8 +267,6 @@ begin
   pr := TProcessThread.Create;
   pr.FreeOnTerminate:=true;
 
-  //  pr.Process.Executable:= '/usr/bin/rg';
-
   if trim(RipGrepExecutable) = EmptyStr then
      begin
        // try some default
@@ -272,7 +278,12 @@ begin
   pr.Process.Parameters.add('--line-buffered');
   pr.Process.Parameters.add('-n');
 
-  if not rbCaseSensitive.Checked then
+  if not cbRecursive.Checked then
+     begin
+       pr.Process.Parameters.add('--max-depth');  pr.Process.Parameters.add('1');
+     end;
+
+  if not rbCaseSensitiveText.Down then
     pr.Process.Parameters.add('-i');
 
   pr.Process.Parameters.add('--json');
@@ -303,7 +314,6 @@ begin
   tmrParseResult.Enabled := true;
   pr.Start;
 
-  //  /usr/bin/rg --color never --column -n -i -e sccsILEdtAddMoreResolutions -g "*.{pp,pas,inc}" /home/varianus/development/lazarus/
 
 end;
 
@@ -387,7 +397,9 @@ procedure TfMainForm.FormCreate(Sender: TObject);
 begin
   FoundFiles := TFoundFiles.Create;
   MessageQueue := specialize TThreadQueue<string>.Create;
-  rbCaseSensitive.Checked := ConfigObj.ReadBoolean('search/casesensitive', false);
+  rbCaseSensitiveText.Down := ConfigObj.ReadBoolean('search/casesensitive_text', false);
+  rbCaseSensitiveFile.Down := ConfigObj.ReadBoolean('search/casesensitive_file', false);
+  cbRecursive.Checked := ConfigObj.ReadBoolean('search/recursive', true);
   RipGrepExecutable:= ConfigObj.ReadString('ripgrep/executable', '');
 
   ConfigObj.ReadStrings('history/files', lbFiles.Items);
@@ -397,7 +409,7 @@ begin
   lbPath.ItemIndex:=0;
 
   ConfigObj.ReadStrings('history/contents', lbContaining.Items);
-  lbContaining.ItemIndex:=-1;
+  lbContaining.ItemIndex:=0;
 
   cbFileNames.ItemIndex:= ConfigObj.ReadInteger('search/filenames', {$IFDEF windows}0{$ELSE}1{$ENDIF});
   cbHidden.Checked := ConfigObj.ReadBoolean('search/hidden', False);
@@ -407,7 +419,9 @@ end;
 
 procedure TfMainForm.FormDestroy(Sender: TObject);
 begin
-  ConfigObj.writeBoolean('search/casesensitive', rbCaseSensitive.Checked);
+  ConfigObj.writeBoolean('search/casesensitive_text', rbCaseSensitiveText.Down);
+  ConfigObj.writeBoolean('search/casesensitive_file', rbCaseSensitiveFile.Down);
+  ConfigObj.writeBoolean('search/recursive', cbRecursive.Checked );
   ConfigObj.WriteString('ripgrep/executable', RipGrepExecutable);
   FoundFiles.Free;
   tmrParseResult.Enabled := false;
