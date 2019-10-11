@@ -235,7 +235,7 @@ end;
 
 procedure TConfig.SaveConfig;
 begin
-  fConfigHolder.SaveToFile(FConfigFile);
+  fConfigHolder.SaveToFile(FConfigFile, true);
 end;
 
 procedure TConfig.ReadConfig;
@@ -366,7 +366,7 @@ end;
 
 procedure TConfig.Flush;
 begin
-  fConfigHolder.SaveToFile(FConfigFile);
+  fConfigHolder.SaveToFile(FConfigFile, true);
 end;
 
 function TConfig.GetResourcesPath: string;
