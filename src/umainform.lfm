@@ -12,7 +12,7 @@ object fMainForm: TfMainForm
   Position = poScreenCenter
   object Splitter2: TSplitter
     Left = 512
-    Height = 437
+    Height = 441
     Top = 144
     Width = 8
   end
@@ -27,8 +27,8 @@ object fMainForm: TfMainForm
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 23
-    Top = 581
+    Height = 19
+    Top = 585
     Width = 956
     Panels = <    
       item
@@ -45,7 +45,7 @@ object fMainForm: TfMainForm
   object vtvResults: TLazVirtualStringTree
     Cursor = 63
     Left = 0
-    Height = 437
+    Height = 441
     Top = 144
     Width = 512
     Align = alLeft
@@ -91,7 +91,7 @@ object fMainForm: TfMainForm
   end
   object pcDetails: TPageControl
     Left = 520
-    Height = 437
+    Height = 441
     Top = 144
     Width = 436
     ActivePage = tsDetails
@@ -100,13 +100,13 @@ object fMainForm: TfMainForm
     TabOrder = 4
     object tsDetails: TTabSheet
       Caption = 'Details'
-      ClientHeight = 409
-      ClientWidth = 428
+      ClientHeight = 412
+      ClientWidth = 426
       object grdDetails: TDrawGrid
         Left = 0
-        Height = 409
+        Height = 412
         Top = 0
-        Width = 428
+        Width = 426
         Align = alClient
         ColCount = 2
         Columns = <        
@@ -131,13 +131,13 @@ object fMainForm: TfMainForm
     end
     object tsLog: TTabSheet
       Caption = 'Log'
-      ClientHeight = 372
-      ClientWidth = 485
+      ClientHeight = 412
+      ClientWidth = 426
       object memoLog: TMemo
         Left = 0
-        Height = 369
+        Height = 412
         Top = 0
-        Width = 487
+        Width = 426
         Align = alClient
         ReadOnly = True
         TabOrder = 0
@@ -155,21 +155,21 @@ object fMainForm: TfMainForm
     TabOrder = 5
     object tsSearch: TTabSheet
       Caption = 'Search'
-      ClientHeight = 108
-      ClientWidth = 948
+      ClientHeight = 107
+      ClientWidth = 946
       object Panel1: TPanel
         Left = 0
-        Height = 108
+        Height = 107
         Top = 0
-        Width = 948
+        Width = 946
         Align = alClient
-        ClientHeight = 108
-        ClientWidth = 948
+        ClientHeight = 107
+        ClientWidth = 946
         TabOrder = 0
         object bSearch: TButton
-          Left = 869
+          Left = 867
           Height = 25
-          Top = 73
+          Top = 72
           Width = 72
           Anchors = [akRight, akBottom]
           Cancel = True
@@ -179,9 +179,9 @@ object fMainForm: TfMainForm
           TabOrder = 0
         end
         object bStop: TButton
-          Left = 869
+          Left = 867
           Height = 25
-          Top = 41
+          Top = 40
           Width = 72
           Anchors = [akRight, akBottom]
           Caption = 'Stop'
@@ -190,14 +190,14 @@ object fMainForm: TfMainForm
         end
         object lbFiles: TComboBox
           Left = 87
-          Height = 23
+          Height = 29
           Top = 8
-          Width = 689
+          Width = 687
           Anchors = [akTop, akLeft, akRight]
           AutoComplete = True
           AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
           DropDownCount = 10
-          ItemHeight = 15
+          ItemHeight = 0
           TabOrder = 2
           Text = '*.{pp,pas,inc}'
         end
@@ -205,23 +205,23 @@ object fMainForm: TfMainForm
           AnchorSideTop.Control = lbFiles
           AnchorSideTop.Side = asrCenter
           Left = 54
-          Height = 15
-          Top = 12
-          Width = 23
+          Height = 17
+          Top = 14
+          Width = 25
           BorderSpacing.Around = 6
           Caption = 'Files'
           ParentColor = False
         end
         object lbPath: TComboBox
           Left = 87
-          Height = 23
+          Height = 29
           Top = 37
-          Width = 608
+          Width = 606
           Anchors = [akTop, akLeft, akRight]
           AutoSelect = False
           BorderSpacing.Around = 6
           DropDownCount = 10
-          ItemHeight = 15
+          ItemHeight = 0
           TabOrder = 3
           Text = 'c:\ex-d\lazarus'
         end
@@ -229,13 +229,13 @@ object fMainForm: TfMainForm
           Left = 87
           Height = 23
           Top = 66
-          Width = 689
+          Width = 687
           Anchors = [akTop, akLeft, akRight]
           AutoComplete = True
           AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
           AutoSize = False
           BorderSpacing.Around = 6
-          ItemHeight = 15
+          ItemHeight = 0
           TabOrder = 4
           Text = 'tprocessutf8'
         end
@@ -243,9 +243,9 @@ object fMainForm: TfMainForm
           AnchorSideTop.Control = lbPath
           AnchorSideTop.Side = asrCenter
           Left = 53
-          Height = 15
-          Top = 41
-          Width = 24
+          Height = 17
+          Top = 43
+          Width = 25
           BorderSpacing.Around = 6
           Caption = 'Path'
           ParentColor = False
@@ -254,9 +254,9 @@ object fMainForm: TfMainForm
           AnchorSideTop.Control = lbContaining
           AnchorSideTop.Side = asrCenter
           Left = 19
-          Height = 15
-          Top = 70
-          Width = 59
+          Height = 17
+          Top = 69
+          Width = 60
           BorderSpacing.Around = 6
           Caption = 'Containing'
           ParentColor = False
@@ -266,9 +266,9 @@ object fMainForm: TfMainForm
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = lbPath
           AnchorSideTop.Side = asrCenter
-          Left = 701
+          Left = 699
           Height = 22
-          Top = 37
+          Top = 40
           Width = 24
           BorderSpacing.Around = 6
           Caption = '...'
@@ -279,7 +279,7 @@ object fMainForm: TfMainForm
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = lbContaining
           AnchorSideTop.Side = asrCenter
-          Left = 782
+          Left = 780
           Height = 23
           Hint = 'Case sensitive'
           Top = 66
@@ -294,10 +294,10 @@ object fMainForm: TfMainForm
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = lbFiles
           AnchorSideTop.Side = asrCenter
-          Left = 782
+          Left = 780
           Height = 23
           Hint = 'Case sensitive'
-          Top = 8
+          Top = 11
           Width = 23
           AllowAllUp = True
           BorderSpacing.Around = 6
@@ -309,10 +309,10 @@ object fMainForm: TfMainForm
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = bSelectPath
           AnchorSideTop.Side = asrCenter
-          Left = 731
-          Height = 19
-          Top = 39
-          Width = 70
+          Left = 729
+          Height = 21
+          Top = 41
+          Width = 78
           Caption = 'Recursive'
           TabOrder = 5
         end
@@ -320,23 +320,23 @@ object fMainForm: TfMainForm
     end
     object tsAdvanced: TTabSheet
       Caption = 'Advanced'
-      ClientHeight = 108
-      ClientWidth = 948
+      ClientHeight = 107
+      ClientWidth = 946
       object GroupBox1: TGroupBox
         Left = 8
         Height = 105
         Top = 8
         Width = 160
         Caption = 'File names'
-        ClientHeight = 85
-        ClientWidth = 156
+        ClientHeight = 87
+        ClientWidth = 158
         TabOrder = 0
         object cbFileNames: TComboBox
           Left = 8
-          Height = 23
+          Height = 29
           Top = 12
           Width = 140
-          ItemHeight = 15
+          ItemHeight = 0
           ItemIndex = 0
           Items.Strings = (
             'Dos expression'
@@ -353,15 +353,15 @@ object fMainForm: TfMainForm
         Top = 8
         Width = 160
         Caption = 'Content'
-        ClientHeight = 85
-        ClientWidth = 156
+        ClientHeight = 87
+        ClientWidth = 158
         TabOrder = 1
         object cbContent: TComboBox
           Left = 8
-          Height = 23
+          Height = 29
           Top = 12
           Width = 140
-          ItemHeight = 15
+          ItemHeight = 0
           ItemIndex = 0
           Items.Strings = (
             'Literal string'
@@ -378,22 +378,22 @@ object fMainForm: TfMainForm
         Top = 8
         Width = 160
         Caption = 'Include in search'
-        ClientHeight = 85
-        ClientWidth = 156
+        ClientHeight = 87
+        ClientWidth = 158
         TabOrder = 2
         object cbHidden: TCheckBox
           Left = 16
-          Height = 19
+          Height = 21
           Top = 8
-          Width = 78
+          Width = 84
           Caption = 'Hidden file'
           TabOrder = 0
         end
         object cbBinary: TCheckBox
           Left = 16
-          Height = 19
+          Height = 21
           Top = 32
-          Width = 53
+          Width = 60
           Caption = 'Binary'
           TabOrder = 1
         end

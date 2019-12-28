@@ -73,6 +73,7 @@ type
     CurrObj : TFoundFile;
     pr: TProcessThread;
     RipGrepExecutable: String;
+    fParsing: boolean;
     MessageQueue: specialize TThreadQueue<string>;
     procedure GotMessage(Sender: TObject;
       const MessageKind: TMessageLineKind; const Message: string);
@@ -189,6 +190,9 @@ end;
 procedure TfMainForm.StopTimer(Sender: TObject);
 begin
   tmrParseResult.Enabled := false;
+  if (MessageQueue.Count > 0) and not FParsing then
+    ParseMessages;
+
 end;
 
 function ReplaceLineEndings(const s:string; NewLineEnds: AnsiChar): string;
@@ -347,7 +351,7 @@ begin
       aCanvas.brush.Color := clHighlight;
       aCanvas.TextOut(x, aRect.Top, aText);
       inc(x, aCanvas.GetTextWidth(atext)+2);
-      StartPos := Obj.SubMatches[i]._end;
+      StartPos := Obj.SubMatches[i]._end+1;
     end;
   if StartPos < Length(Obj.Line) then
     begin
@@ -483,8 +487,15 @@ end;
 
 procedure TfMainForm.tmrParseResultTimer(Sender: TObject);
 begin
+
   tmrParseResult.Enabled := false;
-  ParseMessages;
+  fParsing:=true;
+  try
+    ParseMessages;
+  finally
+    fParsing:=false;
+  end;
+
   tmrParseResult.Enabled := true;
 
 end;

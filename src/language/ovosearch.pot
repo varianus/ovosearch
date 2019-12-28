@@ -22,6 +22,10 @@ msgctxt "tfmainform.bsearch.caption"
 msgid "Search"
 msgstr ""
 
+#: tfmainform.bselectpath.caption
+msgid "..."
+msgstr ""
+
 #: tfmainform.bstop.caption
 msgid "Stop"
 msgstr ""
@@ -29,6 +33,26 @@ msgstr ""
 #: tfmainform.caption
 msgctxt "tfmainform.caption"
 msgid "OvoSearch"
+msgstr ""
+
+#: tfmainform.cbbinary.caption
+msgid "Binary"
+msgstr ""
+
+#: tfmainform.cbcontent.text
+msgid "Literal string"
+msgstr ""
+
+#: tfmainform.cbfilenames.text
+msgid "Dos expression"
+msgstr ""
+
+#: tfmainform.cbhidden.caption
+msgid "Hidden file"
+msgstr ""
+
+#: tfmainform.cbrecursive.caption
+msgid "Recursive"
 msgstr ""
 
 #: tfmainform.grddetails.columns[0].title.caption
@@ -39,6 +63,18 @@ msgstr ""
 #: tfmainform.grddetails.columns[1].title.caption
 msgctxt "tfmainform.grddetails.columns[1].title.caption"
 msgid "Title"
+msgstr ""
+
+#: tfmainform.groupbox1.caption
+msgid "File names"
+msgstr ""
+
+#: tfmainform.groupbox2.caption
+msgid "Content"
+msgstr ""
+
+#: tfmainform.groupbox3.caption
+msgid "Include in search"
 msgstr ""
 
 #: tfmainform.label1.caption
@@ -71,8 +107,41 @@ msgctxt "tfmainform.lbpath.text"
 msgid "c:\\ex-d\\lazarus"
 msgstr ""
 
-#: tfmainform.rbcasesensitive.caption
+#: tfmainform.rbcasesensitivefile.caption
+msgctxt "tfmainform.rbcasesensitivefile.caption"
+msgid "Aa"
+msgstr ""
+
+#: tfmainform.rbcasesensitivefile.hint
+msgctxt "tfmainform.rbcasesensitivefile.hint"
 msgid "Case sensitive"
+msgstr ""
+
+#: tfmainform.rbcasesensitivetext.caption
+msgctxt "tfmainform.rbcasesensitivetext.caption"
+msgid "Aa"
+msgstr ""
+
+#: tfmainform.rbcasesensitivetext.hint
+msgctxt "tfmainform.rbcasesensitivetext.hint"
+msgid "Case sensitive"
+msgstr ""
+
+#: tfmainform.tsadvanced.caption
+msgid "Advanced"
+msgstr ""
+
+#: tfmainform.tsdetails.caption
+msgid "Details"
+msgstr ""
+
+#: tfmainform.tslog.caption
+msgid "Log"
+msgstr ""
+
+#: tfmainform.tssearch.caption
+msgctxt "tfmainform.tssearch.caption"
+msgid "Search"
 msgstr ""
 
 #: tfmainform.vtvresults.header.columns[0].text
