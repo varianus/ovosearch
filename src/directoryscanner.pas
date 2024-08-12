@@ -208,13 +208,13 @@ begin
             Passed := true;
             if Passed and FFilters.CheckMinSize and (SearchRec.Size < ffilters.MinSize) then Passed := false;
             if Passed and FFilters.CheckMaxSize and (SearchRec.Size > ffilters.MaxSize) then Passed := false;
-            if Passed and FFilters.CheckMinDate and (FileDateToDateTime(SearchRec.Time) < ffilters.MinDate) then Passed := false;
-            if Passed and FFilters.CheckMaxDate and (FileDateToDateTime(SearchRec.Time) > ffilters.MaxDate) then Passed := false;
+            if Passed and FFilters.CheckMinDate and (SearchRec.TimeStamp < ffilters.MinDate) then Passed := false;
+            if Passed and FFilters.CheckMaxDate and (SearchRec.TimeStamp > ffilters.MaxDate) then Passed := false;
             if Passed then
               begin
                 info := TFileInfoObject.Create;
                 info.info.Size := SearchRec.Size;
-                info.info.ModifyDate := FileDateToDateTime(SearchRec.Time);
+                info.info.ModifyDate := SearchRec.TimeStamp;
                 //List.AddObject(SysToUTF8(Directory + SearchRec.Name), info);
                 //
               end;

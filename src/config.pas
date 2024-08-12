@@ -184,6 +184,7 @@ begin
    // Trim the oldest files if more than NumFiles
    while IntList.Count > FMax do
      IntList.Delete(IntList.Count-1);           // -1 since its 0 indexed
+   Result := 0 ;
 
 end;
 
