@@ -5,6 +5,7 @@ program ovosearch;
 uses
   {$IFDEF UNIX}
   cthreads,
+  clocale,
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, uMainForm, DirectoryScanner, FilesFunctions, searchresult, jsontools,
