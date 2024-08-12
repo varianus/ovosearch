@@ -63,6 +63,7 @@ type
     FMatchedLine: integer;
     FMatches: Integer;
     FPath: TFileName;
+    function GetByColumn(idx: integer): string;
     function GetFullName: TFileName;
     procedure SetFileName(AValue: TFileName);
     procedure SetFullName(AValue: TFileName);
@@ -77,6 +78,7 @@ type
     property Matches: Integer read FMatches write SetMatches;
     property MatchedLine: integer read FMatchedLine write SetMatchedLine;
     property FileInfo: TFileInfo read FFileInfo write FFileInfo;
+    property ByColumn[idx:integer]: string read GetByColumn;
     Constructor Create;
     Destructor Destroy; override;
   end;
@@ -93,7 +95,7 @@ type
     property SortColumn: TResultField read FSortColumn write SetSortColumn;
     property SortDirection: TSortDirection read FSortDirection write SetSortDirection;
     Procedure SortbyColumn(Field: TResultField; Direction: TSortDirection);
-    function Add(constref AValue: TFoundFile): SizeInt; override;
+    function Add(const AValue: TFoundFile): SizeInt; override;
     constructor Create;
   end;
 
@@ -261,7 +263,7 @@ begin
   Sort(TComparer<TFoundFile>.Construct(Compare));
 end;
 
-function TFoundFiles.Add(constref AValue: TFoundFile): SizeInt;
+function TFoundFiles.Add(const AValue: TFoundFile): SizeInt;
 var
   LSearchResult: TBinarySearchResult;
 begin
@@ -305,6 +307,22 @@ end;
 function TFoundFile.GetFullName: TFileName;
 begin
   Result := IncludeTrailingPathDelimiter(FPath)+FFileName;
+end;
+
+function TFoundFile.GetByColumn(idx: integer): string;
+begin
+  case idx of
+    0:
+      Result := FFileName;
+    1:
+      Result := (IntToStr(FMatches));
+    2:
+      Result := FPath;
+    3:
+      Result := (strByteSize(FFileInfo.Size));
+    4:
+      Result := (DateTimeToStr(FFileInfo.ModifyDate));
+  end;
 end;
 
 procedure TFoundFile.SetFullName(AValue: TFileName);
