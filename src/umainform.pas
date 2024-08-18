@@ -49,7 +49,7 @@ type
     vtvResults: TLazVirtualStringTree;
     Panel1: TPanel;
     Splitter1: TSplitter;
-    Splitter2: TSplitter;
+    vSplitter: TSplitter;
     StatusBar1: TStatusBar;
     tmrParseResult: TTimer;
 
@@ -83,7 +83,7 @@ type
       const MessageKind: TMessageLineKind; const Message: string);
     procedure ParseMessages;
     procedure ProcessFileNames;
-    procedure ReadConfig;
+    procedure ReadConfig(Data: PtrInt);
     procedure RenderLine(aCanvas: TCanvas; aRect: TRect; Obj: TFoundLine);
     procedure SaveConfig;
     procedure StopTimer(Sender: TObject);
@@ -420,11 +420,11 @@ procedure TfMainForm.FormCreate(Sender: TObject);
 begin
   FoundFiles := TFoundFiles.Create;
   MessageQueue := specialize TThreadQueue<string>.Create;
-  ReadConfig;
+  application.QueueAsyncCall(@ReadConfig, PtrInt(self));
 
 end;
 
-procedure TfMainForm.ReadConfig;
+procedure TfMainForm.ReadConfig(Data: PtrInt);
 const
   DEFAULTMASK = {$IFDEF windows}0{$ELSE}1{$ENDIF};
 begin
@@ -446,6 +446,12 @@ begin
   rbCaseSensitiveFile.Down := ConfigObj.ReadBoolean('search/casesensitive_file', False);
   cbRecursive.Checked := ConfigObj.ReadBoolean('search/recursive', True);
   RipGrepExecutable := ConfigObj.ReadString('ripgrep/executable', '');
+
+  Height := ConfigObj.ReadInteger('Form/Height', Height);
+  Width := ConfigObj.ReadInteger('Form/Width', Width);
+  Top := ConfigObj.ReadInteger('Form/Top', Top);
+  Left := ConfigObj.ReadInteger('Form/Left', Left);
+  vSplitter.Left := ConfigObj.ReadInteger('Form/FilePanelWidth', vSplitter.Left);
 end;
 
 procedure TfMainForm.SaveConfig;
@@ -462,6 +468,13 @@ begin
   ConfigObj.WriteInteger('search/filenames', cbFileNames.ItemIndex);
   ConfigObj.writeBoolean('search/hidden', cbHidden.Checked);
   ConfigObj.writeBoolean('search/binary', cbBinary.Checked);
+
+  ConfigObj.WriteInteger('Form/Height', Height);
+  ConfigObj.WriteInteger('Form/Width', Width);
+  ConfigObj.WriteInteger('Form/Top', Top);
+  ConfigObj.WriteInteger('Form/Left', Left);
+  ConfigObj.WriteInteger('Form/FilePanelWidth', vSplitter.Left);
+
 end;
 
 procedure TfMainForm.FormDestroy(Sender: TObject);

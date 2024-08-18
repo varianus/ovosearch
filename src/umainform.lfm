@@ -10,7 +10,7 @@ object fMainForm: TfMainForm
   Position = poScreenCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  object Splitter2: TSplitter
+  object vSplitter: TSplitter
     Left = 512
     Height = 439
     Top = 144
