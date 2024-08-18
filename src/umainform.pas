@@ -63,7 +63,7 @@ type
     procedure vtvResultsAddToSelection(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vtvResultsGetHint(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; var LineBreakStyle: TVTTooltipLineBreakStyle;
-      var HintText: String);
+      var HintText: string);
     procedure vtvResultsGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
       TextType: TVSTTextType; var CellText: string);
     procedure tmrParseResultStartTimer(Sender: TObject);
@@ -83,7 +83,9 @@ type
       const MessageKind: TMessageLineKind; const Message: string);
     procedure ParseMessages;
     procedure ProcessFileNames;
+    procedure ReadConfig;
     procedure RenderLine(aCanvas: TCanvas; aRect: TRect; Obj: TFoundLine);
+    procedure SaveConfig;
     procedure StopTimer(Sender: TObject);
     procedure UpdateForm;
   public
@@ -193,7 +195,7 @@ end;
 
 procedure TfMainForm.StopTimer(Sender: TObject);
 begin
-  bStop.Visible := false;
+  bStop.Visible := False;
   tmrParseResult.Enabled := False;
   if (MessageQueue.Count > 0) and not FParsing then
     ParseMessages;
@@ -326,7 +328,7 @@ begin
   pr.OnMessageLine := @GotMessage;
   tmrParseResult.Enabled := True;
   pr.Start;
-  bStop.Visible:= true;
+  bStop.Visible := True;
 
 end;
 
@@ -415,15 +417,17 @@ begin
 end;
 
 procedure TfMainForm.FormCreate(Sender: TObject);
-const
-  DEFAULTMASK = {$IFDEF windows}0{$ELSE}1{$ENDIF};
 begin
   FoundFiles := TFoundFiles.Create;
   MessageQueue := specialize TThreadQueue<string>.Create;
-  rbCaseSensitiveText.Down := ConfigObj.ReadBoolean('search/casesensitive_text', False);
-  rbCaseSensitiveFile.Down := ConfigObj.ReadBoolean('search/casesensitive_file', False);
-  cbRecursive.Checked := ConfigObj.ReadBoolean('search/recursive', True);
-  RipGrepExecutable := ConfigObj.ReadString('ripgrep/executable', '');
+  ReadConfig;
+
+end;
+
+procedure TfMainForm.ReadConfig;
+const
+  DEFAULTMASK = {$IFDEF windows}0{$ELSE}1{$ENDIF};
+begin
 
   ConfigObj.ReadStrings('history/files', lbFiles.Items);
   lbFiles.ItemIndex := 0;
@@ -438,17 +442,18 @@ begin
   cbHidden.Checked := ConfigObj.ReadBoolean('search/hidden', False);
   cbBinary.Checked := ConfigObj.ReadBoolean('search/binary', False);
 
+  rbCaseSensitiveText.Down := ConfigObj.ReadBoolean('search/casesensitive_text', False);
+  rbCaseSensitiveFile.Down := ConfigObj.ReadBoolean('search/casesensitive_file', False);
+  cbRecursive.Checked := ConfigObj.ReadBoolean('search/recursive', True);
+  RipGrepExecutable := ConfigObj.ReadString('ripgrep/executable', '');
 end;
 
-procedure TfMainForm.FormDestroy(Sender: TObject);
+procedure TfMainForm.SaveConfig;
 begin
   ConfigObj.writeBoolean('search/casesensitive_text', rbCaseSensitiveText.Down);
   ConfigObj.writeBoolean('search/casesensitive_file', rbCaseSensitiveFile.Down);
   ConfigObj.writeBoolean('search/recursive', cbRecursive.Checked);
   ConfigObj.WriteString('ripgrep/executable', RipGrepExecutable);
-  FoundFiles.Free;
-  tmrParseResult.Enabled := False;
-  MessageQueue.Free;
 
   ConfigObj.WriteStrings('history/files', lbFiles.Items);
   ConfigObj.WriteStrings('history/paths', lbPath.Items);
@@ -457,6 +462,17 @@ begin
   ConfigObj.WriteInteger('search/filenames', cbFileNames.ItemIndex);
   ConfigObj.writeBoolean('search/hidden', cbHidden.Checked);
   ConfigObj.writeBoolean('search/binary', cbBinary.Checked);
+end;
+
+procedure TfMainForm.FormDestroy(Sender: TObject);
+begin
+
+  SaveConfig;
+
+  FoundFiles.Free;
+  tmrParseResult.Enabled := False;
+  MessageQueue.Free;
+
 end;
 
 procedure TfMainForm.bSelectPathClick(Sender: TObject);
@@ -477,12 +493,12 @@ end;
 
 procedure TfMainForm.vtvResultsGetHint(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Column: TColumnIndex;
-  var LineBreakStyle: TVTTooltipLineBreakStyle; var HintText: String);
+  var LineBreakStyle: TVTTooltipLineBreakStyle; var HintText: string);
 var
   Data: TFoundFile;
 begin
   Data := FoundFiles[Node^.Index];
-  HintText :=  Data.ByColumn[Column];
+  HintText := Data.ByColumn[Column];
 end;
 
 procedure TfMainForm.vtvResultsGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
@@ -491,7 +507,7 @@ var
   Data: TFoundFile;
 begin
   Data := FoundFiles[Node^.Index]; // TFoundFile(PNodeData(vtvResults.GetNodeData(Node))^.Data);
-  CellText :=  Data.ByColumn[Column];
+  CellText := Data.ByColumn[Column];
 
 end;
 
