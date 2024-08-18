@@ -112,6 +112,7 @@ begin
   if (MessageKind <> ieinfo) then
   begin
     memoLog.Lines.Add(Message);
+    pcDetails.ActivePage := tsLog;
     exit;
   end;
   MessageQueue.Enqueue(Message);
@@ -192,6 +193,7 @@ end;
 
 procedure TfMainForm.StopTimer(Sender: TObject);
 begin
+  bStop.Visible := false;
   tmrParseResult.Enabled := False;
   if (MessageQueue.Count > 0) and not FParsing then
     ParseMessages;
@@ -324,6 +326,7 @@ begin
   pr.OnMessageLine := @GotMessage;
   tmrParseResult.Enabled := True;
   pr.Start;
+  bStop.Visible:= true;
 
 end;
 
