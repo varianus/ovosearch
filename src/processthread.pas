@@ -124,7 +124,16 @@ begin
   SetLength(Buf,16*1024);
   fLines:=TStringList.Create;
 
-  fProcess.Execute;
+  try
+    fProcess.Execute;
+
+  except
+    on e: exception do
+      begin
+        Terminate;
+        fLines.AddObject(E.Message, self);
+      end;
+  end;
 
   while (not Terminated) do // and (FProcess.Running)  do
     begin
@@ -144,7 +153,8 @@ begin
 
   SendResults;
 
-  fProcess.Terminate(100);
+  if fProcess.Running then
+    fProcess.Terminate(100);
 
   fLines.free;
 
