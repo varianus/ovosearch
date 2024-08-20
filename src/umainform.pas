@@ -26,9 +26,9 @@ type
     cbBinary: TCheckBox;
     cbRecursive: TCheckBox;
     grdDetails: TDrawGrid;
-    GroupBox1: TGroupBox;
-    GroupBox2: TGroupBox;
-    GroupBox3: TGroupBox;
+    gbGlobbing: TGroupBox;
+    gbContent: TGroupBox;
+    gbInclusion: TGroupBox;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
@@ -36,7 +36,7 @@ type
     lbFiles: TComboBox;
     lbPath: TComboBox;
     memoLog: TMemo;
-    PageControl1: TPageControl;
+    pcMain: TPageControl;
     pcDetails: TPageControl;
     rbCaseSensitiveText: TSpeedButton;
     rbCaseSensitiveFile: TSpeedButton;
@@ -47,10 +47,10 @@ type
     tsDetails: TTabSheet;
     tsLog: TTabSheet;
     vtvResults: TLazVirtualStringTree;
-    Panel1: TPanel;
+    pnlCriteria: TPanel;
     Splitter1: TSplitter;
     vSplitter: TSplitter;
-    StatusBar1: TStatusBar;
+    sbMessages: TStatusBar;
     tmrParseResult: TTimer;
 
     procedure bSearchClick(Sender: TObject);
@@ -96,6 +96,7 @@ var
   fMainForm: TfMainForm;
 
 implementation
+uses FileUtil;
 
 {$R *.lfm}
 
@@ -277,15 +278,20 @@ begin
   FoundFiles.Clear;
   MessageQueue.Clear;
 
+  if trim(RipGrepExecutable) = EmptyStr then
+  begin
+    RipGrepExecutable := FindDefaultExecutablePath('rg');
+    if RipGrepExecutable = EmptyStr then
+      begin
+        ShowMessage('Cannot find rg executable');
+        exit;
+      end;
+    // Open config
+  end;
+
   pr := TProcessThread.Create;
   pr.FreeOnTerminate := True;
 
-  if trim(RipGrepExecutable) = EmptyStr then
-  begin
-    // try some default
-    // message to user
-    // Open config
-  end;
   pr.Process.Executable := RipGrepExecutable;
 
   pr.Process.Parameters.add('--line-buffered');
@@ -337,7 +343,7 @@ begin
   if assigned(pr) and pr.Process.Running then
   begin
     pr.Terminate;
-    StatusBar1.Panels[0].Text := 'Interrupted by user';
+    sbMessages.Panels[0].Text := 'Interrupted by user';
   end;
 end;
 
@@ -526,13 +532,13 @@ end;
 
 procedure TfMainForm.tmrParseResultStartTimer(Sender: TObject);
 begin
-  StatusBar1.Panels[0].Text := 'Searching';
+  sbMessages.Panels[0].Text := 'Searching';
   Application.ProcessMessages;
 end;
 
 procedure TfMainForm.tmrParseResultStopTimer(Sender: TObject);
 begin
-  StatusBar1.Panels[0].Text := '';
+  sbMessages.Panels[0].Text := '';
   Application.ProcessMessages;
 
 end;

@@ -2,34 +2,34 @@ object fMainForm: TfMainForm
   Left = 1520
   Height = 604
   Top = 33
-  Width = 956
+  Width = 1083
   Caption = 'OvoSearch'
   ClientHeight = 604
-  ClientWidth = 956
+  ClientWidth = 1083
   Font.Height = -12
   Position = poScreenCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   object vSplitter: TSplitter
-    Left = 512
-    Height = 439
-    Top = 144
-    Width = 8
+    Left = 699
+    Height = 445
+    Top = 136
+    Width = 5
   end
   object Splitter1: TSplitter
     Cursor = crVSplit
     Left = 0
     Height = 8
-    Top = 136
-    Width = 956
+    Top = 128
+    Width = 1083
     Align = alTop
     ResizeAnchor = akTop
   end
-  object StatusBar1: TStatusBar
+  object sbMessages: TStatusBar
     Left = 0
-    Height = 21
-    Top = 583
-    Width = 956
+    Height = 23
+    Top = 581
+    Width = 1083
     Panels = <    
       item
         Width = 150
@@ -45,9 +45,9 @@ object fMainForm: TfMainForm
   object vtvResults: TLazVirtualStringTree
     Cursor = 63
     Left = 0
-    Height = 439
-    Top = 144
-    Width = 512
+    Height = 445
+    Top = 136
+    Width = 699
     Align = alLeft
     DefaultText = 'Node'
     Header.AutoSizeIndex = -1
@@ -94,23 +94,23 @@ object fMainForm: TfMainForm
     OnNodeDblClick = vtvResultsNodeDblClick
   end
   object pcDetails: TPageControl
-    Left = 520
-    Height = 439
-    Top = 144
-    Width = 436
+    Left = 704
+    Height = 445
+    Top = 136
+    Width = 379
     ActivePage = tsDetails
     Align = alClient
     TabIndex = 0
     TabOrder = 4
     object tsDetails: TTabSheet
       Caption = 'Details'
-      ClientHeight = 404
-      ClientWidth = 430
+      ClientHeight = 417
+      ClientWidth = 371
       object grdDetails: TDrawGrid
         Left = 0
-        Height = 404
+        Height = 417
         Top = 0
-        Width = 430
+        Width = 371
         Align = alClient
         ColCount = 2
         Columns = <        
@@ -136,45 +136,45 @@ object fMainForm: TfMainForm
     end
     object tsLog: TTabSheet
       Caption = 'Log'
-      ClientHeight = 404
-      ClientWidth = 430
+      ClientHeight = 417
+      ClientWidth = 371
       object memoLog: TMemo
         Left = 0
-        Height = 404
+        Height = 417
         Top = 0
-        Width = 430
+        Width = 371
         Align = alClient
         ReadOnly = True
         TabOrder = 0
       end
     end
   end
-  object PageControl1: TPageControl
+  object pcMain: TPageControl
     Left = 0
-    Height = 136
+    Height = 128
     Top = 0
-    Width = 956
-    ActivePage = tsSearch
+    Width = 1083
+    ActivePage = tsAdvanced
     Align = alTop
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 5
     object tsSearch: TTabSheet
       Caption = 'Search'
-      ClientHeight = 101
-      ClientWidth = 950
-      object Panel1: TPanel
+      ClientHeight = 100
+      ClientWidth = 1075
+      object pnlCriteria: TPanel
         Left = 0
-        Height = 101
+        Height = 100
         Top = 0
-        Width = 950
+        Width = 1075
         Align = alClient
-        ClientHeight = 101
-        ClientWidth = 950
+        ClientHeight = 100
+        ClientWidth = 1075
         TabOrder = 0
         object bSearch: TButton
-          Left = 871
+          Left = 996
           Height = 25
-          Top = 66
+          Top = 65
           Width = 72
           Anchors = [akRight, akBottom]
           Cancel = True
@@ -184,9 +184,9 @@ object fMainForm: TfMainForm
           OnClick = bSearchClick
         end
         object bStop: TButton
-          Left = 871
+          Left = 996
           Height = 25
-          Top = 34
+          Top = 33
           Width = 72
           Anchors = [akRight, akBottom]
           Caption = 'Stop'
@@ -196,14 +196,14 @@ object fMainForm: TfMainForm
         end
         object lbFiles: TComboBox
           Left = 87
-          Height = 27
+          Height = 23
           Top = 8
-          Width = 691
+          Width = 816
           Anchors = [akTop, akLeft, akRight]
           AutoComplete = True
           AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
           DropDownCount = 10
-          ItemHeight = 0
+          ItemHeight = 15
           TabOrder = 2
           Text = '*.{pp,pas,inc}'
         end
@@ -211,23 +211,23 @@ object fMainForm: TfMainForm
           AnchorSideTop.Control = lbFiles
           AnchorSideTop.Side = asrCenter
           Left = 54
-          Height = 17
-          Top = 13
-          Width = 25
+          Height = 15
+          Top = 12
+          Width = 23
           BorderSpacing.Around = 6
           Caption = 'Files'
           ParentColor = False
         end
         object lbPath: TComboBox
           Left = 87
-          Height = 27
+          Height = 23
           Top = 37
-          Width = 610
+          Width = 735
           Anchors = [akTop, akLeft, akRight]
           AutoSelect = False
           BorderSpacing.Around = 6
           DropDownCount = 10
-          ItemHeight = 0
+          ItemHeight = 15
           TabOrder = 3
           Text = 'c:\ex-d\lazarus'
         end
@@ -235,13 +235,13 @@ object fMainForm: TfMainForm
           Left = 87
           Height = 23
           Top = 66
-          Width = 691
+          Width = 816
           Anchors = [akTop, akLeft, akRight]
           AutoComplete = True
           AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
           AutoSize = False
           BorderSpacing.Around = 6
-          ItemHeight = 0
+          ItemHeight = 15
           TabOrder = 4
           Text = 'tprocessutf8'
         end
@@ -249,20 +249,20 @@ object fMainForm: TfMainForm
           AnchorSideTop.Control = lbPath
           AnchorSideTop.Side = asrCenter
           Left = 53
-          Height = 17
-          Top = 42
-          Width = 25
+          Height = 15
+          Top = 41
+          Width = 48
           BorderSpacing.Around = 6
-          Caption = 'Path'
+          Caption = 'Search in'
           ParentColor = False
         end
         object Label3: TLabel
           AnchorSideTop.Control = lbContaining
           AnchorSideTop.Side = asrCenter
           Left = 19
-          Height = 17
-          Top = 69
-          Width = 60
+          Height = 15
+          Top = 70
+          Width = 59
           BorderSpacing.Around = 6
           Caption = 'Containing'
           ParentColor = False
@@ -272,9 +272,9 @@ object fMainForm: TfMainForm
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = lbPath
           AnchorSideTop.Side = asrCenter
-          Left = 703
+          Left = 828
           Height = 22
-          Top = 39
+          Top = 37
           Width = 24
           BorderSpacing.Around = 6
           Caption = '...'
@@ -285,7 +285,7 @@ object fMainForm: TfMainForm
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = lbContaining
           AnchorSideTop.Side = asrCenter
-          Left = 784
+          Left = 909
           Height = 23
           Hint = 'Case sensitive'
           Top = 66
@@ -300,10 +300,10 @@ object fMainForm: TfMainForm
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = lbFiles
           AnchorSideTop.Side = asrCenter
-          Left = 784
+          Left = 909
           Height = 23
           Hint = 'Case sensitive'
-          Top = 10
+          Top = 8
           Width = 23
           AllowAllUp = True
           BorderSpacing.Around = 6
@@ -315,10 +315,10 @@ object fMainForm: TfMainForm
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = bSelectPath
           AnchorSideTop.Side = asrCenter
-          Left = 733
-          Height = 21
-          Top = 40
-          Width = 77
+          Left = 858
+          Height = 19
+          Top = 39
+          Width = 68
           Caption = 'Recursive'
           TabOrder = 5
         end
@@ -326,23 +326,23 @@ object fMainForm: TfMainForm
     end
     object tsAdvanced: TTabSheet
       Caption = 'Advanced'
-      ClientHeight = 101
-      ClientWidth = 950
-      object GroupBox1: TGroupBox
+      ClientHeight = 100
+      ClientWidth = 1075
+      object gbGlobbing: TGroupBox
         Left = 8
         Height = 105
         Top = 8
         Width = 160
         Caption = 'File names'
-        ClientHeight = 86
+        ClientHeight = 85
         ClientWidth = 156
         TabOrder = 0
         object cbFileNames: TComboBox
           Left = 8
-          Height = 25
+          Height = 23
           Top = 12
           Width = 140
-          ItemHeight = 0
+          ItemHeight = 15
           ItemIndex = 0
           Items.Strings = (
             'Dos expression'
@@ -353,21 +353,21 @@ object fMainForm: TfMainForm
           Text = 'Dos expression'
         end
       end
-      object GroupBox2: TGroupBox
+      object gbContent: TGroupBox
         Left = 176
         Height = 105
         Top = 8
         Width = 160
         Caption = 'Content'
-        ClientHeight = 86
+        ClientHeight = 85
         ClientWidth = 156
         TabOrder = 1
         object cbContent: TComboBox
           Left = 8
-          Height = 25
+          Height = 23
           Top = 12
           Width = 140
-          ItemHeight = 0
+          ItemHeight = 15
           ItemIndex = 0
           Items.Strings = (
             'Literal string'
@@ -378,28 +378,28 @@ object fMainForm: TfMainForm
           Text = 'Literal string'
         end
       end
-      object GroupBox3: TGroupBox
+      object gbInclusion: TGroupBox
         Left = 344
         Height = 105
         Top = 8
         Width = 160
         Caption = 'Include in search'
-        ClientHeight = 86
+        ClientHeight = 85
         ClientWidth = 156
         TabOrder = 2
         object cbHidden: TCheckBox
           Left = 16
-          Height = 21
+          Height = 19
           Top = 8
-          Width = 83
+          Width = 76
           Caption = 'Hidden file'
           TabOrder = 0
         end
         object cbBinary: TCheckBox
           Left = 16
-          Height = 21
+          Height = 19
           Top = 32
-          Width = 59
+          Width = 51
           Caption = 'Binary'
           TabOrder = 1
         end
@@ -412,12 +412,12 @@ object fMainForm: TfMainForm
     OnTimer = tmrParseResultTimer
     OnStartTimer = tmrParseResultStartTimer
     OnStopTimer = tmrParseResultStopTimer
-    Left = 1064
-    Top = 24
+    Left = 952
+    Top = 40
   end
   object SelectDirectory: TSelectDirectoryDialog
     Options = [ofNoChangeDir, ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail]
-    Left = 888
-    Top = 16
+    Left = 848
+    Top = 24
   end
 end
