@@ -16,7 +16,7 @@
 {"hash":5046979,"name":"tfmainform.label1.caption","sourcebytes":[70,105,108,101,115],"value":"Files"},
 {"hash":6018803,"name":"tfmainform.lbpath.text","sourcebytes":[99,58,92,101,120,45,100,92,108,97,122,97,114,117,115],"value":"c:\\ex-d\\lazarus"},
 {"hash":186474248,"name":"tfmainform.lbcontaining.text","sourcebytes":[116,112,114,111,99,101,115,115,117,116,102,56],"value":"tprocessutf8"},
-{"hash":354472,"name":"tfmainform.label2.caption","sourcebytes":[80,97,116,104],"value":"Path"},
+{"hash":143261518,"name":"tfmainform.label2.caption","sourcebytes":[83,101,97,114,99,104,32,105,110],"value":"Search in"},
 {"hash":175958551,"name":"tfmainform.label3.caption","sourcebytes":[67,111,110,116,97,105,110,105,110,103],"value":"Containing"},
 {"hash":12558,"name":"tfmainform.bselectpath.caption","sourcebytes":[46,46,46],"value":"..."},
 {"hash":219672053,"name":"tfmainform.rbcasesensitivetext.hint","sourcebytes":[67,97,115,101,32,115,101,110,115,105,116,105,118,101],"value":"Case sensitive"},
@@ -25,11 +25,11 @@
 {"hash":1137,"name":"tfmainform.rbcasesensitivefile.caption","sourcebytes":[65,97],"value":"Aa"},
 {"hash":181000309,"name":"tfmainform.cbrecursive.caption","sourcebytes":[82,101,99,117,114,115,105,118,101],"value":"Recursive"},
 {"hash":197676484,"name":"tfmainform.tsadvanced.caption","sourcebytes":[65,100,118,97,110,99,101,100],"value":"Advanced"},
-{"hash":124826595,"name":"tfmainform.groupbox1.caption","sourcebytes":[70,105,108,101,32,110,97,109,101,115],"value":"File names"},
+{"hash":124826595,"name":"tfmainform.gbglobbing.caption","sourcebytes":[70,105,108,101,32,110,97,109,101,115],"value":"File names"},
 {"hash":245126558,"name":"tfmainform.cbfilenames.text","sourcebytes":[68,111,115,32,101,120,112,114,101,115,115,105,111,110],"value":"Dos expression"},
-{"hash":174435348,"name":"tfmainform.groupbox2.caption","sourcebytes":[67,111,110,116,101,110,116],"value":"Content"},
+{"hash":174435348,"name":"tfmainform.gbcontent.caption","sourcebytes":[67,111,110,116,101,110,116],"value":"Content"},
 {"hash":117902999,"name":"tfmainform.cbcontent.text","sourcebytes":[76,105,116,101,114,97,108,32,115,116,114,105,110,103],"value":"Literal string"},
-{"hash":208449192,"name":"tfmainform.groupbox3.caption","sourcebytes":[73,110,99,108,117,100,101,32,105,110,32,115,101,97,114,99,104],"value":"Include in search"},
+{"hash":208449192,"name":"tfmainform.gbinclusion.caption","sourcebytes":[73,110,99,108,117,100,101,32,105,110,32,115,101,97,114,99,104],"value":"Include in search"},
 {"hash":206059141,"name":"tfmainform.cbhidden.caption","sourcebytes":[72,105,100,100,101,110,32,102,105,108,101],"value":"Hidden file"},
 {"hash":76564633,"name":"tfmainform.cbbinary.caption","sourcebytes":[66,105,110,97,114,121],"value":"Binary"}
 ]}
