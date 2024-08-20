@@ -241,8 +241,13 @@ end;
 
 procedure TConfig.ReadConfig;
 begin
-
-  fConfigHolder.LoadFromFile(FConfigFile);
+  try
+    fConfigHolder.LoadFromFile(FConfigFile);
+  except
+    on e: EFileNotFoundException do;
+    else
+    raise;
+  end;
 {$ifdef WINDOWS}
   ResourcesPath := ReadString(SectionUnix + '/' + IdentResourcesPath,
     ExtractFilePath(ExtractFilePath(ParamStr(0))));
