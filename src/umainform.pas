@@ -132,6 +132,8 @@ begin
   while MessageQueue.Count > 0 do
   begin
     Message := MessageQueue.Dequeue;
+    if Message ='' then
+      Continue;
     Node := TJsonNode.Create;
     node.Parse(Message);
     if Node.Find('type').Value = '"begin"' then

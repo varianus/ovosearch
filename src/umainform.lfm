@@ -112,26 +112,34 @@ object fMainForm: TfMainForm
         Top = 0
         Width = 371
         Align = alClient
+        AutoFillColumns = True
         ColCount = 2
         Columns = <        
           item
             Alignment = taRightJustify
             ReadOnly = True
+            SizePriority = 0
             Title.Caption = 'Title'
+            Width = 184
           end        
           item
             ReadOnly = True
             Title.Caption = 'Title'
-            Width = 564
+            Width = 166
           end>
         ExtendedSelect = False
         FixedCols = 0
         FixedRows = 0
         Options = [goRangeSelect, goSmoothScroll, goDontScrollPartCell]
+        ScrollBars = ssBoth
         TabOrder = 0
         TitleFont.Height = -12
         OnDblClick = grdDetailsDblClick
         OnDrawCell = grdDetailsDrawCell
+        ColWidths = (
+          184
+          166
+        )
       end
     end
     object tsLog: TTabSheet
@@ -154,9 +162,9 @@ object fMainForm: TfMainForm
     Height = 128
     Top = 0
     Width = 1083
-    ActivePage = tsAdvanced
+    ActivePage = tsSearch
     Align = alTop
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 5
     object tsSearch: TTabSheet
       Caption = 'Search'
@@ -210,10 +218,12 @@ object fMainForm: TfMainForm
         object Label1: TLabel
           AnchorSideTop.Control = lbFiles
           AnchorSideTop.Side = asrCenter
-          Left = 54
+          AnchorSideRight.Control = lbFiles
+          Left = 58
           Height = 15
           Top = 12
           Width = 23
+          Anchors = [akTop, akRight]
           BorderSpacing.Around = 6
           Caption = 'Files'
           ParentColor = False
@@ -248,10 +258,12 @@ object fMainForm: TfMainForm
         object Label2: TLabel
           AnchorSideTop.Control = lbPath
           AnchorSideTop.Side = asrCenter
-          Left = 53
+          AnchorSideRight.Control = lbPath
+          Left = 33
           Height = 15
           Top = 41
           Width = 48
+          Anchors = [akTop, akRight]
           BorderSpacing.Around = 6
           Caption = 'Search in'
           ParentColor = False
