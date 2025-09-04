@@ -79,6 +79,7 @@ type
     RipGrepExecutable: string;
     fParsing: boolean;
     MessageQueue: specialize TThreadQueue<string>;
+    procedure AutoSizeCol(const aCol: longint);
     procedure GotMessage(Sender: TObject;
       const MessageKind: TMessageLineKind; const Message: string);
     procedure ParseMessages;
@@ -96,11 +97,12 @@ var
   fMainForm: TfMainForm;
 
 implementation
+
 uses FileUtil;
 
-{$R *.lfm}
+  {$R *.lfm}
 
-{ TfMainForm }
+  { TfMainForm }
 
 procedure TfMainForm.UpdateForm;
 begin
@@ -132,7 +134,7 @@ begin
   while MessageQueue.Count > 0 do
   begin
     Message := MessageQueue.Dequeue;
-    if Message ='' then
+    if Message = '' then
       Continue;
     Node := TJsonNode.Create;
     node.Parse(Message);
@@ -146,9 +148,7 @@ begin
       begin
         tmpNode := Node.Find('data/path/bytes');
         if Assigned(tmpNode) then
-        begin
           CurrObj.FullName := StrippedOfNonAscii(DecodeStringBase64(tmpNode.AsString));
-        end;
       end;
       FoundFiles.Add(CurrObj);
       CurrObj.FileInfo := GetFileInfo(CurrObj.FullName);
@@ -165,9 +165,7 @@ begin
       begin
         tmpNode := Node.Find('data/lines/bytes');
         if Assigned(tmpNode) then
-        begin
           line.Line := StrippedOfNonAscii(DecodeStringBase64(tmpNode.AsString));
-        end;
 
       end;
 
@@ -189,8 +187,7 @@ begin
     end;
 
     if Node.Find('type').Value = '"summary"' then
-    begin
-    end;
+    ;
 
     Node.Free;
   end;
@@ -217,7 +214,6 @@ begin
   p := 1;
   r := 1;
   while (p <= Max) do
-  begin
     if S[p] in [#10, #13] then
     begin
       Result[r] := NewLineEnds;
@@ -232,7 +228,6 @@ begin
       Inc(r);
       Inc(p);
     end;
-  end;
   SetLength(Result, R - 1);
 end;
 
@@ -284,10 +279,10 @@ begin
   begin
     RipGrepExecutable := FindDefaultExecutablePath('rg');
     if RipGrepExecutable = EmptyStr then
-      begin
-        ShowMessage('Cannot find rg executable');
-        exit;
-      end;
+    begin
+      ShowMessage('Cannot find rg executable');
+      exit;
+    end;
     // Open config
   end;
 
@@ -317,10 +312,8 @@ begin
     pr.Process.Parameters.add('--hidden');
 
   if cbBinary.Checked then
-  begin
-    pr.Process.Parameters.add('--text');
-    //  pr.Process.Parameters.add('--null-data');
-  end;
+    pr.Process.Parameters.add('--text')//  pr.Process.Parameters.add('--null-data');
+  ;
 
   //  pr.Process.Parameters.add('--no-ignore');   pr.Process.Parameters.add('--no-ignore-global');
 
@@ -387,6 +380,26 @@ begin
     //inc(x, aCanvas.GetTextWidth(atext));
   end;
 
+end;
+
+procedure TfMainForm.AutoSizeCol(const aCol: longint);
+var
+  MaxWidth, TextW, i: integer;
+begin
+  //Resize the column to display the largest value.
+  if aCol = 0 then
+  begin
+    grdDetails.ColWidths[aCol] := grdDetails.Canvas.TextWidth(IntToStr(CurrObj.FoundLines[CurrObj.Matches-1].Row)) + grdDetails.Canvas.TextWidth('xx');
+    exit;
+  end;
+  MaxWidth := 0;
+  for i := 0 to grdDetails.RowCount - 1 do
+  begin
+    TextW := grdDetails.Canvas.TextWidth(CurrObj.FoundLines[i].Line);
+    if TextW > MaxWidth then
+      MaxWidth := TextW;
+  end;
+  grdDetails.ColWidths[aCol] := MaxWidth + grdDetails.Canvas.TextWidth('x');
 end;
 
 
@@ -509,6 +522,8 @@ begin
   CurrObj := FoundFiles[Node^.Index]; // TFoundFile(PNodeData(vtvResults.GetNodeData(Node))^.Data);
   DebugLn('>>' + CurrObj.FoundLines[0].Line + '<<');
   grdDetails.RowCount := CurrObj.FoundLines.Count;
+  AutoSizeCol(0);
+  AutoSizeCol(1);
   grdDetails.invalidate;
 end;
 

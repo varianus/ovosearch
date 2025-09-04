@@ -112,34 +112,27 @@ object fMainForm: TfMainForm
         Top = 0
         Width = 371
         Align = alClient
-        AutoFillColumns = True
         ColCount = 2
         Columns = <        
           item
-            Alignment = taRightJustify
-            ReadOnly = True
-            SizePriority = 0
-            Title.Caption = 'Title'
-            Width = 184
-          end        
-          item
             ReadOnly = True
             Title.Caption = 'Title'
-            Width = 166
+            Width = 119
           end>
+        DefaultColWidth = 1
         ExtendedSelect = False
-        FixedCols = 0
+        FixedColor = clDefault
         FixedRows = 0
-        Options = [goRangeSelect, goSmoothScroll, goDontScrollPartCell]
+        Flat = True
+        GridLineColor = clNone
+        Options = [goFixedVertLine, goRangeSelect, goSmoothScroll, goFixedColSizing, goDontScrollPartCell]
+        RowCount = 2
         ScrollBars = ssBoth
         TabOrder = 0
         TitleFont.Height = -12
+        TitleStyle = tsNative
         OnDblClick = grdDetailsDblClick
         OnDrawCell = grdDetailsDrawCell
-        ColWidths = (
-          184
-          166
-        )
       end
     end
     object tsLog: TTabSheet
