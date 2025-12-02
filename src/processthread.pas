@@ -59,7 +59,6 @@ begin
 
   if Assigned(FOnMessageList) then
      FOnMessageList(Self,  FLines);
-
   fLines.Clear;
 end;
 

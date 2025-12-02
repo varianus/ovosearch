@@ -8,6 +8,7 @@ object fMainForm: TfMainForm
   ClientWidth = 1083
   Font.Height = -12
   Position = poScreenCenter
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   object vSplitter: TSplitter
@@ -98,10 +99,24 @@ object fMainForm: TfMainForm
     Height = 445
     Top = 136
     Width = 379
-    ActivePage = tsDetails
+    ActivePage = tsSummary
     Align = alClient
     TabIndex = 0
     TabOrder = 4
+    object tsSummary: TTabSheet
+      Caption = 'Summary'
+      ClientHeight = 417
+      ClientWidth = 371
+      object memoSummary: TMemo
+        Left = 0
+        Height = 417
+        Top = 0
+        Width = 371
+        Align = alClient
+        ReadOnly = True
+        TabOrder = 0
+      end
+    end
     object tsDetails: TTabSheet
       Caption = 'Details'
       ClientHeight = 417
