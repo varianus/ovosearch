@@ -7,16 +7,19 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
   StdCtrls, Grids, searchresult, ProcessThread, JsonTools, LCLType, Buttons,
-  FilesFunctions, Config, Generics.Collections, base64, Types, LazLoggerBase, laz.VirtualTrees,
-  LCLIntf, LazUTF8;
+  FilesFunctions, Config, Generics.Collections, base64, RegExpr, Types, LazLoggerBase, laz.VirtualTrees,
+  LCLIntf, AsyncProcess, LazUTF8;
+
+const
+  COUNTER_MATCH = 1;
+  COUNTER_SCANNED = 2;
+  COUNTER_SKIPPED = 3;
+  COUNTER_MESSAGE = 4;
 
 type
-
-  { TfMainForm }
   TSearchState = (ssFile, ssLine, ssNone);
 
-  { TComboBox }
-
+  { TfMainForm }
   TfMainForm = class(TForm)
     bSearch: TButton;
     bStop: TButton;
@@ -36,12 +39,14 @@ type
     lbFiles: TComboBox;
     lbPath: TComboBox;
     memoLog: TMemo;
+    memoSummary: TMemo;
     pcMain: TPageControl;
     pcDetails: TPageControl;
     rbCaseSensitiveText: TSpeedButton;
     rbCaseSensitiveFile: TSpeedButton;
     SelectDirectory: TSelectDirectoryDialog;
     bSelectPath: TSpeedButton;
+    tsSummary: TTabSheet;
     tsSearch: TTabSheet;
     tsAdvanced: TTabSheet;
     tsDetails: TTabSheet;
@@ -78,6 +83,9 @@ type
     pr: TProcessThread;
     RipGrepExecutable: string;
     fParsing: boolean;
+    Skipped: TRegExpr;
+    Scanned: TRegExpr;
+    Counters: array[1..4] of integer;
     MessageQueue: specialize TThreadQueue<string>;
     procedure AutoSizeCol(const aCol: longint);
     procedure GotMessage(Sender: TObject;
@@ -89,6 +97,7 @@ type
     procedure SaveConfig;
     procedure StopTimer(Sender: TObject);
     procedure UpdateForm;
+    procedure UpdateSummary;
   public
 
   end;
@@ -99,10 +108,12 @@ var
 implementation
 
 uses FileUtil;
+{$R *.lfm}
 
-  {$R *.lfm}
-
-  { TfMainForm }
+const
+  RG_DEBUG = 'rg: DEBUG';
+  REGEX_SKIP = '^'+ RG_DEBUG +'.*(\signoring\s)';
+  REGEX_SCAN = '^'+ RG_DEBUG +'.*(\whitelisting\s)';
 
 procedure TfMainForm.UpdateForm;
 begin
@@ -115,11 +126,25 @@ begin
   if (message = '') then
     exit;
   if (MessageKind <> ieinfo) then
-  begin
-    memoLog.Lines.Add(Message);
-    pcDetails.ActivePage := tsLog;
-    exit;
-  end;
+    begin
+      if not Message.StartsWith(RG_DEBUG)   then
+      begin
+        memoLog.Lines.Add(Message);
+        pcDetails.ActivePage := tsLog;
+        inc(counters[COUNTER_MESSAGE]);
+      end
+      else
+      if Scanned.Exec(Message) then
+         begin
+            inc(Counters[COUNTER_SCANNED]);
+         end
+      else
+      if Skipped.Exec(Message) then
+        begin
+          inc(Counters[COUNTER_SKIPPED]);
+        end;
+      exit;
+    end;
   MessageQueue.Enqueue(Message);
 end;
 
@@ -128,6 +153,7 @@ var
   Line: TFoundLine;
   Node: TJsonNode;
   tmpNode: TJsonNode;
+  vtvNode: PVirtualNode;
   Message: string;
   i, J: integer;
 begin
@@ -151,13 +177,16 @@ begin
           CurrObj.FullName := StrippedOfNonAscii(DecodeStringBase64(tmpNode.AsString));
       end;
       FoundFiles.Add(CurrObj);
+      inc(Counters[COUNTER_MATCH]);
+
       CurrObj.FileInfo := GetFileInfo(CurrObj.FullName);
-      vtvResults.AddChild(nil);
+      vtvNode := vtvResults.AddChild(nil);
+
     end;
 
     if Node.Find('type').Value = '"match"' then
     begin
-      Line := TFoundLine.Create;
+      Line    := TFoundLine.Create;
       tmpnode := node.find('data/lines/text');
       if Assigned(tmpNode) then
         line.Line := tmpNode.AsString
@@ -183,7 +212,9 @@ begin
     if Node.Find('type').Value = '"end"' then
     begin
       CurrObj.MatchedLine := node.Find('data/stats/matched_lines').AsInteger;
-      CurrObj.Matches := node.Find('data/stats/matches').AsInteger;
+      CurrObj.Matches     := node.Find('data/stats/matches').AsInteger;
+      if vtvResults.RootNodeCount = 1 then
+        vtvResults.AddToSelection(vtvNode);
     end;
 
     if Node.Find('type').Value = '"summary"' then
@@ -265,6 +296,8 @@ begin
 end;
 
 procedure TfMainForm.bSearchClick(Sender: TObject);
+var
+  i: integer;
 begin
   lbFiles.AddHistoryItem(lbFiles.Text, 10, True, True);
   lbPath.AddHistoryItem(lbPath.Text, 10, True, True);
@@ -315,7 +348,8 @@ begin
     pr.Process.Parameters.add('--text')//  pr.Process.Parameters.add('--null-data');
   ;
 
-  //  pr.Process.Parameters.add('--no-ignore');   pr.Process.Parameters.add('--no-ignore-global');
+
+  pr.Process.Parameters.add('--debug');
 
   ProcessFileNames;
 
@@ -324,8 +358,10 @@ begin
   pr.Process.Parameters.add(lbPath.Text);
 
   debugLn(pr.Process.Executable + ' ' + ReplaceLineEndings(pr.Process.Parameters.Text, ' '));
+  For i:= 0 to 4 do
+    Counters[i] := 0;
 
-  pr.OnTerminate := @StopTimer;
+  pr.OnTerminate   := @StopTimer;
   pr.OnMessageLine := @GotMessage;
   tmrParseResult.Enabled := True;
   pr.Start;
@@ -343,9 +379,27 @@ begin
 end;
 
 procedure TfMainForm.grdDetailsDblClick(Sender: TObject);
+var
+  Match: TFoundLine;
 begin
   if not Assigned(CurrObj) then
     exit;
+  Match := CurrObj.FoundLines[grdDetails.Selection.Top];
+
+  { #todo : Allow to launch a editor passing match position }
+  { example
+  if FileExists('C:\source\ovotext\bin\win64\ovotext.exe') then
+    with TAsyncProcess.Create(self) do
+    begin
+      Options    := [];
+      Executable := 'C:\source\ovotext\bin\win64\ovotext.exe';
+      Parameters.Add('-c=' + IntToStr(Match.SubMatches[0].Start));
+      Parameters.Add('-r=' + IntToStr(Match.Row));
+      Parameters.Add(CurrObj.FullName);
+      Execute;
+      Free;
+    end;
+   }
 end;
 
 procedure TfMainForm.RenderLine(aCanvas: TCanvas; aRect: TRect; Obj: TFoundLine);
@@ -389,7 +443,7 @@ begin
   //Resize the column to display the largest value.
   if aCol = 0 then
   begin
-    grdDetails.ColWidths[aCol] := grdDetails.Canvas.TextWidth(IntToStr(CurrObj.FoundLines[CurrObj.Matches-1].Row)) + grdDetails.Canvas.TextWidth('xx');
+    grdDetails.ColWidths[aCol] := grdDetails.Canvas.TextWidth(IntToStr(CurrObj.FoundLines[CurrObj.Matches - 1].Row)) + grdDetails.Canvas.TextWidth('xx');
     exit;
   end;
   MaxWidth := 0;
@@ -439,9 +493,11 @@ end;
 
 procedure TfMainForm.FormCreate(Sender: TObject);
 begin
-  FoundFiles := TFoundFiles.Create;
+  FoundFiles   := TFoundFiles.Create;
   MessageQueue := specialize TThreadQueue<string>.Create;
   application.QueueAsyncCall(@ReadConfig, PtrInt(self));
+  Skipped := TRegExpr.Create(REGEX_SKIP);
+  Scanned := TRegExpr.Create(REGEX_SCAN);
 
 end;
 
@@ -460,8 +516,8 @@ begin
   lbContaining.ItemIndex := 0;
 
   cbFileNames.ItemIndex := ConfigObj.ReadInteger('search/filenames', DEFAULTMASK);
-  cbHidden.Checked := ConfigObj.ReadBoolean('search/hidden', False);
-  cbBinary.Checked := ConfigObj.ReadBoolean('search/binary', False);
+  cbHidden.Checked      := ConfigObj.ReadBoolean('search/hidden', False);
+  cbBinary.Checked      := ConfigObj.ReadBoolean('search/binary', False);
 
   rbCaseSensitiveText.Down := ConfigObj.ReadBoolean('search/casesensitive_text', False);
   rbCaseSensitiveFile.Down := ConfigObj.ReadBoolean('search/casesensitive_file', False);
@@ -469,9 +525,9 @@ begin
   RipGrepExecutable := ConfigObj.ReadString('ripgrep/executable', '');
 
   Height := ConfigObj.ReadInteger('Form/Height', Height);
-  Width := ConfigObj.ReadInteger('Form/Width', Width);
-  Top := ConfigObj.ReadInteger('Form/Top', Top);
-  Left := ConfigObj.ReadInteger('Form/Left', Left);
+  Width  := ConfigObj.ReadInteger('Form/Width', Width);
+  Top    := ConfigObj.ReadInteger('Form/Top', Top);
+  Left   := ConfigObj.ReadInteger('Form/Left', Left);
   vSplitter.Left := ConfigObj.ReadInteger('Form/FilePanelWidth', vSplitter.Left);
 end;
 
@@ -506,7 +562,8 @@ begin
   FoundFiles.Free;
   tmrParseResult.Enabled := False;
   MessageQueue.Free;
-
+  Skipped.free;
+  Scanned.free;
 end;
 
 procedure TfMainForm.bSelectPathClick(Sender: TObject);
@@ -520,7 +577,7 @@ procedure TfMainForm.vtvResultsAddToSelection(Sender: TBaseVirtualTree; Node: PV
 begin
   if not assigned(Node) then exit;
   CurrObj := FoundFiles[Node^.Index]; // TFoundFile(PNodeData(vtvResults.GetNodeData(Node))^.Data);
-  DebugLn('>>' + CurrObj.FoundLines[0].Line + '<<');
+  //  DebugLn('>>' + CurrObj.FoundLines[0].Line + '<<');
   grdDetails.RowCount := CurrObj.FoundLines.Count;
   AutoSizeCol(0);
   AutoSizeCol(1);
@@ -533,7 +590,7 @@ procedure TfMainForm.vtvResultsGetHint(Sender: TBaseVirtualTree;
 var
   Data: TFoundFile;
 begin
-  Data := FoundFiles[Node^.Index];
+  Data     := FoundFiles[Node^.Index];
   HintText := Data.ByColumn[Column];
 end;
 
@@ -542,7 +599,7 @@ procedure TfMainForm.vtvResultsGetText(Sender: TBaseVirtualTree; Node: PVirtualN
 var
   Data: TFoundFile;
 begin
-  Data := FoundFiles[Node^.Index]; // TFoundFile(PNodeData(vtvResults.GetNodeData(Node))^.Data);
+  Data     := FoundFiles[Node^.Index]; // TFoundFile(PNodeData(vtvResults.GetNodeData(Node))^.Data);
   CellText := Data.ByColumn[Column];
 
 end;
@@ -567,11 +624,24 @@ begin
   fParsing := True;
   try
     ParseMessages;
+    UpdateSummary;
   finally
     fParsing := False;
   end;
 
   tmrParseResult.Enabled := True;
+
+end;
+
+Procedure TfMainForm.UpdateSummary;
+var
+  SummaryText: string;
+begin
+  SummaryText := format('Found'#9#9'%d'+sLineBreak+
+                        'Scanned'#9#9'%d'+sLineBreak+
+                        'Ignored'#9#9'%d'+sLineBreak,
+                        [Counters[COUNTER_MATCH], Counters[COUNTER_SCANNED], Counters[COUNTER_SKIPPED]]);
+  memoSummary.Lines.Text := SummaryText;
 
 end;
 

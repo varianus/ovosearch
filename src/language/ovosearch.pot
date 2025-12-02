@@ -75,11 +75,6 @@ msgctxt "tfmainform.grddetails.columns[0].title.caption"
 msgid "Title"
 msgstr ""
 
-#: tfmainform.grddetails.columns[1].title.caption
-msgctxt "tfmainform.grddetails.columns[1].title.caption"
-msgid "Title"
-msgstr ""
-
 #: tfmainform.label1.caption
 msgctxt "tfmainform.label1.caption"
 msgid "Files"
@@ -145,6 +140,10 @@ msgstr ""
 #: tfmainform.tssearch.caption
 msgctxt "tfmainform.tssearch.caption"
 msgid "Search"
+msgstr ""
+
+#: tfmainform.tssummary.caption
+msgid "Summary"
 msgstr ""
 
 #: tfmainform.vtvresults.header.columns[0].text
