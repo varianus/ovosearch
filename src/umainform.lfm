@@ -92,6 +92,7 @@ object fMainForm: TfMainForm
     OnGetText = vtvResultsGetText
     OnGetHint = vtvResultsGetHint
     OnHeaderClick = vtvResultsHeaderClick
+    OnNodeClick = vtvResultsNodeClick
     OnNodeDblClick = vtvResultsNodeDblClick
   end
   object pcDetails: TPageControl

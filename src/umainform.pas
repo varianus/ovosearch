@@ -76,6 +76,7 @@ type
     procedure tmrParseResultTimer(Sender: TObject);
     procedure vtvResultsHeaderClick(Sender: TVTHeader; HitInfo: TVTHeaderHitInfo
       );
+    procedure vtvResultsNodeClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
     procedure vtvResultsNodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
   private
     FoundFiles: TFoundFiles;
@@ -583,7 +584,6 @@ begin
   AutoSizeCol(0);
   AutoSizeCol(1);
   grdDetails.invalidate;
-  pcDetails.ActivePage := tsDetails;
 end;
 
 procedure TfMainForm.vtvResultsGetHint(Sender: TBaseVirtualTree;
@@ -657,6 +657,11 @@ begin
   FoundFiles.SortbyColumn(TResultField(HitInfo.Column), searchresult.TSortDirection(Sender.SortDirection));
   Sender.SortColumn := HitInfo.Column;
 
+end;
+
+procedure TfMainForm.vtvResultsNodeClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
+begin
+  pcDetails.ActivePage := tsDetails;
 end;
 
 procedure TfMainForm.vtvResultsNodeDblClick(Sender: TBaseVirtualTree; const HitInfo: THitInfo);
