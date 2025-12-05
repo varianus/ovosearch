@@ -358,13 +358,14 @@ begin
   pr.Process.Parameters.add(lbPath.Text);
 
   debugLn(pr.Process.Executable + ' ' + ReplaceLineEndings(pr.Process.Parameters.Text, ' '));
-  For i:= 0 to 4 do
+  For i:= 1 to Length(Counters)  do
     Counters[i] := 0;
 
   pr.OnTerminate   := @StopTimer;
   pr.OnMessageLine := @GotMessage;
   tmrParseResult.Enabled := True;
   pr.Start;
+  pcDetails.ActivePage := tsSummary;
   bStop.Visible := True;
 
 end;
@@ -387,7 +388,7 @@ begin
   Match := CurrObj.FoundLines[grdDetails.Selection.Top];
 
   { #todo : Allow to launch a editor passing match position }
-  { example
+//   example
   if FileExists('C:\source\ovotext\bin\win64\ovotext.exe') then
     with TAsyncProcess.Create(self) do
     begin
@@ -399,7 +400,7 @@ begin
       Execute;
       Free;
     end;
-   }
+
 end;
 
 procedure TfMainForm.RenderLine(aCanvas: TCanvas; aRect: TRect; Obj: TFoundLine);
@@ -443,7 +444,7 @@ begin
   //Resize the column to display the largest value.
   if aCol = 0 then
   begin
-    grdDetails.ColWidths[aCol] := grdDetails.Canvas.TextWidth(IntToStr(CurrObj.FoundLines[CurrObj.Matches - 1].Row)) + grdDetails.Canvas.TextWidth('xx');
+    grdDetails.ColWidths[aCol] := grdDetails.Canvas.TextWidth(IntToStr(CurrObj.FoundLines[CurrObj.FoundLines.Count - 1].Row)) + grdDetails.Canvas.TextWidth('xx');
     exit;
   end;
   MaxWidth := 0;
@@ -582,6 +583,7 @@ begin
   AutoSizeCol(0);
   AutoSizeCol(1);
   grdDetails.invalidate;
+  pcDetails.ActivePage := tsDetails;
 end;
 
 procedure TfMainForm.vtvResultsGetHint(Sender: TBaseVirtualTree;
